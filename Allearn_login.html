@@ -173,7 +173,7 @@ async function login(){
   sessionStorage.setItem("idacc", acc.idacc);
   sessionStorage.setItem("role", acc.role);
 
-  location.href = acc.role === "admin" ? "admin_dashboard.html" : "Allearn_index.html";
+  location.href = acc.role === "admin" ? "admin_dashboard.html" : "index.html";
 }
 
 async function signUp(){
