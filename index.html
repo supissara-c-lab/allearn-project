@@ -304,17 +304,28 @@
 
     async function loadProfessor() {
         const scroll = document.getElementById("professorScroll");
-        const { data, error } = await supabaseClient.from("Professor").select("idprofessor, name, surname, img_professor").limit(10);
-        if (error) return;
         
-        scroll.innerHTML = data.map(p => `
-            <a href="Allearn_professor.html?id=${p.idprofessor}" style="text-decoration:none; color:inherit; flex-shrink:0;">
-                <div class="professor-card">
-                    <img src="${p.img_professor || 'img/professor-default.jpg'}" onerror="this.src='img/professor-default.jpg'">
-                    <h3>${p.name}<br>${p.surname}</h3>
-                </div>
-            </a>
-        `).join('');
+        // แก้ไข: เอา .limit(10) ออก และเพิ่ม .order("idprofessor") เพื่อเรียงตามเลข ID
+        const { data, error } = await supabaseClient
+            .from("Professor")
+            .select("idprofessor, name, surname, img_professor")
+            .order("idprofessor", { ascending: true }); // เรียงจากน้อยไปมาก
+
+        if (error) {
+            console.error("Error loading professors:", error);
+            return;
+        }
+        
+        if (data) {
+            scroll.innerHTML = data.map(p => `
+                <a href="Allearn_professor.html?id=${p.idprofessor}" style="text-decoration:none; color:inherit; flex-shrink:0;">
+                    <div class="professor-card">
+                        <img src="${p.img_professor || 'img/professor-default.jpg'}" onerror="this.src='img/professor-default.jpg'">
+                        <h3>${p.name}<br>${p.surname}</h3>
+                    </div>
+                </a>
+            `).join('');
+        }
     }
 
     loadLatestSheets();
