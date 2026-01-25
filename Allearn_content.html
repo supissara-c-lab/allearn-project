@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="Allearn_header.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<title>Allearn - เนื้อหาชีท</title>
+
+<style>
+body {
+  background:#f5f7fa;
+  background-image: linear-gradient(#e0e7ef 1px, transparent 1px);
+  background-size: 100% 40px;
+  margin: 0;
+  font-family: 'Kanit', sans-serif;
+}
+.main-wrapper {
+  max-width: 1100px; margin: 40px auto; padding: 40px;
+  background: white; border-radius: 40px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.05);
+}
+.sheet-main-card {
+  background: #fff9e6; border-radius: 35px; padding: 40px;
+  display: flex; gap: 35px; align-items: flex-start;
+  margin-bottom: 30px; position: relative;
+}
+.edit-sheet-btn {
+  position: absolute; top: 25px; right: 25px; color: #ccc;
+  font-size: 22px; text-decoration: none; transition: 0.3s; display: none;
+}
+.edit-sheet-btn:hover { color: #999; transform: scale(1.1); }
+.sheet-preview-side img {
+  width: 260px; height: auto; min-height: 360px;
+  object-fit: cover; border-radius: 25px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1); background: #eee;
+}
+.sheet-info-side { flex: 1; }
+.speech-bubble {
+  position: relative; background: #4a7599; padding: 18px 25px;
+  border-radius: 20px; margin-bottom: 5px; color: white; display: inline-block;
+}
+.speech-bubble::after {
+  content: ""; position: absolute; left: -10px; top: 22px;
+  border-top: 10px solid transparent; border-bottom: 10px solid transparent;
+  border-right: 12px solid #4a7599;
+}
+.like-row { display: flex; align-items: center; gap: 8px; margin: 10px 0 15px 5px; }
+.btn-like-trigger { background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+.fa-heart { font-size: 22px; color: #ddd; transition: 0.3s; }
+.fa-heart.active { color: #ff4757; filter: drop-shadow(0 0 5px rgba(255, 71, 87, 0.3)); }
+.tags-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.tag-item { padding: 6px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; display: inline-block; }
+.tag-yellow { background: #f7d046; color: #000 !important; }
+.tag-blue { background: #2f6bff; color: #fff !important; }
+.tag-prof { background: #e0e7ef; color: #1f3c88 !important; }
+.desc-inner-card { background: #fffdf5; border-radius: 20px; padding: 20px 25px; border: 1px solid #fcf3d7; min-height: 100px; }
+.description-text { font-size: 16px; line-height: 1.7; color: #444; white-space: pre-line; }
+.pdf-viewer-frame { width: 100%; height: 800px; border: 1px solid #eee; border-radius: 25px; margin-top: 20px; }
+.comment-section { margin-top: 40px; border-top: 1px solid #eee; padding-top: 30px; }
+.comment-item { padding: 20px; background: #f8fafc; border-radius: 20px; margin-bottom: 15px; border: 1px solid #edf2f7; }
+.btn-edit { color: #4a90e2; background: none; border: none; cursor: pointer; font-size: 12px; }
+.btn-delete { color: #e74c3c; background: none; border: none; cursor: pointer; font-size: 12px; margin-left: 10px; }
+</style>
+</head>
+
+<body>
+
+<div id="header"></div>
+
+<div class="main-wrapper">
+    <section class="sheet-main-card">
+      <a href="#" id="editBtn" class="edit-sheet-btn" title="แก้ไขชีท">
+        <i class="fa-solid fa-pen-to-square"></i>
+      </a>
+
+      <div class="sheet-preview-side">
+        <img id="sheetCover" src="Exsheet.png" onerror="this.src='Exsheet.png'">
+      </div>
+
+      <div class="sheet-info-side">
+        <div class="speech-bubble">
+          <h1 id="sheetName" style="margin:0; font-size: 24px;">กำลังโหลด...</h1>
+        </div>
+
+        <div class="like-row">
+            <button class="btn-like-trigger" onclick="toggleLike()">
+                <i id="likeIcon" class="fa-solid fa-heart"></i>
+                <span id="likeCount" class="like-count-text">0 Likes</span>
+            </button>
+        </div>
+
+        <div class="tags-row" id="tagContainer"></div>
+
+        <div class="desc-inner-card">
+            <div class="description-text" id="sheetDesc">กำลังโหลดรายละเอียด...</div>
+        </div>
+      </div>
+    </section>
+
+    <iframe id="pdfViewer" class="pdf-viewer-frame"></iframe>
+
+    <section class="comment-section">
+        <h2 id="commentTitle" style="color: #1f3c88;">คอมเมนต์</h2>
+        <div class="comment-box">
+            <textarea id="commentInput" style="width:100%; height:100px; padding:15px; border-radius:15px; border:1px solid #ddd; font-family:inherit; resize:none;" placeholder="แสดงความคิดเห็น..."></textarea>
+            <div id="buttonGroup">
+                <button onclick="sendComment()" id="submitCommentBtn" style="margin-top:10px; padding:10px 25px; border-radius:25px; border:none; background:#4a90e2; color:white; font-weight:bold; cursor:pointer;">ส่งคอมเมนต์</button>
+            </div>
+        </div>
+        <div id="commentList" style="margin-top:30px;"></div>
+    </section>
+</div>
+
+<script>
+const supabaseClient = supabase.createClient(
+  "https://ctfrqwehpvpldtiojedb.supabase.co",
+  "sb_publishable_YHDQnG7VsNgb4O4i6MPN5g_lgU5eOGI"
+);
+
+const params = new URLSearchParams(window.location.search);
+const IDSHEET = params.get("idsheet");
+const currentUserId = sessionStorage.getItem("idacc");
+let isLiked = false;
+let editingCommentId = null;
+
+fetch("Allearn_header.html").then(r=>r.text()).then(t=>{
+    document.getElementById("header").innerHTML=t;
+    initSearchDropdown();
+});
+
+function initSearchDropdown() {
+    const sInput = document.getElementById('headerSearchInput');
+    const sDropdown = document.getElementById('headerSearchDropdown');
+    if (!sInput) return;
+    sInput.addEventListener('focus', () => { sDropdown.classList.add('show'); loadSearchQuickTags(); });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.search-container')) sDropdown.classList.remove('show'); });
+}
+
+async function loadSearchQuickTags() {
+    const subList = document.getElementById('searchSubjectList');
+    const profList = document.getElementById('searchProfessorList');
+    try {
+        const [{ data: subs }, { data: profs }] = await Promise.all([
+            supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(8),
+            supabaseClient.from("Professor").select("idprofessor, name").limit(8)
+        ]);
+        if (subs && subList) subList.innerHTML = subs.map(s => `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`).join('');
+        if (profs && profList) profList.innerHTML = profs.map(p => `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`).join('');
+    } catch (e) {}
+}
+
+async function loadSheet(){
+  if(!IDSHEET) return;
+  const { data, error } = await supabaseClient
+    .from("Sheet")
+    .select(`
+        sheet_name, description, file_path, idacc, sheet_cover, idprofessor, idmajor, idsubject,
+        Professor ( name, surname ),
+        Major ( major_name ),
+        Subject ( subject_name, idyear )
+    `)
+    .eq("idsheet", IDSHEET).single();
+
+  if(error) {
+    console.error("Query Error:", error);
+    return;
+  }
+
+  document.getElementById("sheetName").textContent = data.sheet_name;
+  document.getElementById("sheetDesc").textContent = data.description || "ไม่มีรายละเอียดเพิ่มเติม";
+  
+  const coverImg = document.getElementById("sheetCover");
+  if (data.sheet_cover) {
+      coverImg.src = data.sheet_cover;
+  }
+
+  const { data: pdfUrl } = supabaseClient.storage.from('sheet-pdf').getPublicUrl(data.file_path);
+  document.getElementById("pdfViewer").src = pdfUrl.publicUrl;
+
+  const tagContainer = document.getElementById("tagContainer");
+  let tagsHtml = "";
+  if (data.Professor) tagsHtml += `<a href="Allearn_professor.html?id=${data.idprofessor}" class="tag-item tag-prof">${data.Professor.name} ${data.Professor.surname}</a>`;
+  if (data.Major) tagsHtml += `<span class="tag-item tag-blue">${data.Major.major_name}</span>`;
+  if (data.Subject) tagsHtml += `<a href="Allearn_years.html?idyear=${data.Subject.idyear}&target_sub=${data.idsubject}" class="tag-item tag-yellow">${data.Subject.subject_name}</a>`;
+  tagContainer.innerHTML = tagsHtml;
+
+  if (data.idacc == currentUserId) {
+    const editBtn = document.getElementById("editBtn");
+    editBtn.style.display = "block";
+    editBtn.href = `Allearn_edit.html?idsheet=${IDSHEET}`;
+  }
+
+  updateLikeUI();
+  loadComments();
+}
+
+async function updateLikeUI() {
+    const { count } = await supabaseClient.from('favsheet').select('*', { count: 'exact', head: true }).eq('idsheet', IDSHEET);
+    document.getElementById('likeCount').innerText = `${count || 0} Likes`;
+    if (currentUserId) {
+        const { data } = await supabaseClient.from('favsheet').select('idfav').eq('idsheet', IDSHEET).eq('idacc', currentUserId).maybeSingle();
+        isLiked = !!data;
+        document.getElementById('likeIcon').className = isLiked ? 'fa-solid fa-heart active' : 'fa-solid fa-heart';
+    }
+}
+
+async function toggleLike() {
+    if (!currentUserId) return alert("กรุณาเข้าสู่ระบบ");
+    if (isLiked) {
+        await supabaseClient.from('favsheet').delete().eq('idsheet', IDSHEET).eq('idacc', currentUserId);
+        isLiked = false;
+    } else {
+        await supabaseClient.from('favsheet').insert([{ idsheet: IDSHEET, idacc: currentUserId }]);
+        isLiked = true;
+    }
+    updateLikeUI();
+}
+
+async function loadComments() {
+    const listEl = document.getElementById("commentList");
+    const { data } = await supabaseClient.from("comment").select(`idcomment, text, idacc, Account ( name, surname )`).eq("idsheet", IDSHEET).order("idcomment", { ascending: false });
+    if (!data) return;
+    listEl.innerHTML = data.map(item => `
+        <div class="comment-item">
+            <div style="display: flex; justify-content: space-between;">
+                <strong style="color: #1f3c88;">${item.Account?.name || 'ผู้ใช้งาน'} ${item.Account?.surname || ''}</strong>
+                ${item.idacc == currentUserId ? `<div><button onclick="prepareEdit('${item.idcomment}', '${item.text.replace(/'/g, "\\'")}')" class="btn-edit">แก้ไข</button><button onclick="deleteComment('${item.idcomment}')" class="btn-delete">ลบ</button></div>` : ''}
+            </div>
+            <p style="margin: 10px 0 0; color: #444;">${item.text}</p>
+        </div>
+    `).join('');
+}
+
+async function sendComment() {
+    const text = document.getElementById("commentInput").value.trim();
+    if (!text || !currentUserId) return;
+    if (editingCommentId) await supabaseClient.from("comment").update({ text }).eq("idcomment", editingCommentId);
+    else await supabaseClient.from("comment").insert([{ text, idacc: currentUserId, idsheet: IDSHEET }]);
+    resetCommentBox();
+    loadComments();
+}
+
+function prepareEdit(id, text) {
+    editingCommentId = id;
+    document.getElementById("commentInput").value = text;
+    document.getElementById("buttonGroup").innerHTML = `<button onclick="sendComment()" style="background:#27ae60; color:white; padding:10px 25px; border-radius:25px; border:none; cursor:pointer;">ยืนยันแก้ไข</button> <button onclick="resetCommentBox()" style="background:#999; color:white; padding:10px 25px; border-radius:25px; border:none; cursor:pointer; margin-left:10px;">ยกเลิก</button>`;
+}
+
+function resetCommentBox() {
+    editingCommentId = null;
+    document.getElementById("commentInput").value = "";
+    document.getElementById("buttonGroup").innerHTML = `<button onclick="sendComment()" style="background:#4a90e2; color:white; padding:10px 25px; border-radius:25px; border:none; font-weight:bold; cursor:pointer;">ส่งคอมเมนต์</button>`;
+}
+
+async function deleteComment(id) {
+    if(confirm("ต้องการลบคอมเมนต์ใช่หรือไม่?")) { await supabaseClient.from("comment").delete().eq("idcomment", id); loadComments(); }
+}
+
+loadSheet();
+</script>
+</body>
+</html>

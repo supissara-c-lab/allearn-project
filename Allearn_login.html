@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <title>Allearn - เข้าสู่ระบบ</title>
+
+    <style>
+        body{
+            margin:0;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            background:#b1c6e1;
+            background-image:repeating-linear-gradient(
+                0deg,transparent,transparent 39px,#8fa9c9 39px,#8fa9c9 41px
+            );
+            font-family:'Kanit',sans-serif;
+        }
+        .login-container{
+            background:#fff9e6;
+            max-width:420px;
+            width:100%;
+            padding:40px;
+            border-radius:30px;
+            box-shadow:0 10px 25px rgba(0,0,0,.1);
+            text-align:center;
+        }
+        .logo{width:100px;margin-bottom:20px;}
+        .form-group{text-align:left;margin-bottom:15px;}
+        label{font-weight:500;color:#4a7599;display: block;margin-bottom: 5px;}
+        input,select{
+            width:100%;
+            padding:12px;
+            border-radius:12px;
+            border:1px solid #ddd;
+            box-sizing: border-box; /* ป้องกัน input ล้นกรอบ */
+        }
+        .login-btn{
+            background:#f0706a;
+            color:white;
+            border:none;
+            padding:12px;
+            border-radius:25px;
+            width:100%;
+            font-size:18px;
+            cursor:pointer;
+            margin-top:15px;
+        }
+        .link-text{
+            margin-top:15px;
+            display:block;
+            cursor:pointer;
+            color:#4a7599;
+            text-decoration:underline;
+        }
+        .name-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .name-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <img src="logolearn.png" class="logo">
+
+    <div id="loginBox">
+        <div class="form-group">
+            <label>Username</label>
+            <input id="loginUser" type="text">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input id="loginPass" type="password">
+        </div>
+        <button class="login-btn" onclick="login()">LOGIN</button>
+        <span class="link-text" onclick="showSignup()">ยังไม่มีบัญชี? สมัครสมาชิก</span>
+    </div>
+
+    <div id="signupBox" style="display:none">
+        <div class="form-group">
+            <label>Username</label>
+            <input id="auser">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input id="apass" type="password">
+        </div>
+
+        <div class="name-row">
+            <div class="form-group">
+                <label>ชื่อ</label>
+                <input id="fname" placeholder="ชื่อ">
+            </div>
+            <div class="form-group">
+                <label>นามสกุล</label>
+                <input id="lname" placeholder="นามสกุล">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>สาขา</label>
+            <select id="idmajor"></select>
+        </div>
+
+        <div class="form-group">
+            <label>ชั้นปี</label>
+            <select id="idyear"></select>
+        </div>
+
+        <button class="login-btn" onclick="signUp()">SIGN UP</button>
+        <span class="link-text" onclick="showLogin()">กลับไป Login</span>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ... (ส่วน Script เหมือนเดิมที่คุณให้มา) ...
+const supabaseClient = supabase.createClient(
+  "https://ctfrqwehpvpldtiojedb.supabase.co",
+  "sb_publishable_YHDQnG7VsNgb4O4i6MPN5g_lgU5eOGI"
+);
+
+function showSignup(){
+  loginBox.style.display="none";
+  signupBox.style.display="block";
+}
+function showLogin(){
+  signupBox.style.display="none";
+  loginBox.style.display="block";
+}
+
+async function loadDropdowns(){
+  const {data:majors} = await supabaseClient.from("Major").select("*");
+  majors?.forEach(m=>{
+    idmajor.innerHTML += `<option value="${m.idmajor}">${m.major_name}</option>`;
+  });
+
+  const {data:years} = await supabaseClient.from("Year").select("*");
+  years?.forEach(y=>{
+    idyear.innerHTML += `<option value="${y.idyear}">${y.year}</option>`;
+  });
+}
+loadDropdowns();
+
+async function login(){
+  const u = loginUser.value.trim();
+  const p = loginPass.value.trim();
+  if(!u || !p){ alert("กรุณากรอก username และ password"); return; }
+
+  const { data } = await supabaseClient
+    .from("Account")
+    .select("idacc, role")
+    .eq("auser", u)
+    .eq("apass", p)
+    .limit(1);
+
+  if(!data || data.length === 0){ alert("username หรือ password ไม่ถูกต้อง"); return; }
+
+  const acc = data[0];
+  sessionStorage.setItem("idacc", acc.idacc);
+  sessionStorage.setItem("role", acc.role);
+
+  location.href = acc.role === "admin" ? "admin_dashboard.html" : "Allearn_index.html";
+}
+
+async function signUp(){
+  const u  = auser.value.trim();
+  const p  = apass.value.trim();
+  const fn = fname.value.trim();
+  const ln = lname.value.trim();
+
+  if(!u || !p || !fn || !ln){ alert("กรุณากรอกข้อมูลให้ครบทุกช่อง"); return; }
+
+  const { error } = await supabaseClient
+    .from("Account")
+    .insert({
+      idacc: crypto.randomUUID(),
+      auser: u,
+      apass: p,
+      name: fn,
+      surname: ln,
+      idmajor: idmajor.value,
+      idyear: idyear.value,
+      role: "user"
+    });
+
+  if(error){ alert(error.message); return; }
+  alert("สมัครสมาชิกสำเร็จ");
+  showLogin();
+}
+</script>
+
+</body>
+</html>

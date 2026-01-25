@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="Allearn_header.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+<title>Allearn - บัญชีผู้ใช้</title>
+
+<style>
+body{
+  font-family: 'Kanit', sans-serif;
+  background:#f5f7fa;
+  background-image: linear-gradient(#e0e7ef 1px, transparent 1px);
+  background-size: 100% 40px;
+  margin:0;
+}
+
+.profile-detail{
+  display:flex;
+  gap:50px;
+  padding:50px;
+  max-width:1000px;
+  margin:40px auto;
+  background:#fff;
+  border-radius:40px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+.edit-profile-btn {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  color: #ccc; 
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.3s;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.edit-profile-btn:hover { color: #999; transform: scale(1.1); }
+
+.profile-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-left img {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid #f7d046; 
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.logout-btn {
+  margin-top: 25px;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 25px;
+  background: #ff6b6b;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.logout-btn:hover { background: #fa5252; transform: scale(1.05); }
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-title {
+  font-size: 32px;
+  color: #1f3c88;
+  margin: 0 0 10px 0;
+}
+
+.tag-row {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 20px 0;
+}
+
+.tag {
+  padding: 6px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.blue { background: #2f6bff; color: #fff; }
+.babyblue { background: #b1e4eb; color: #000; }
+
+.stats-clean span { color: #666; font-size: 14px; }
+.stats-clean h2 { margin: 0; color: #1f3c88; font-size: 28px; }
+
+/* ===== 2. FILE AREA & GRID ===== */
+.file-area {
+  max-width: 1000px;
+  margin: 0 auto 40px;
+}
+.file-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #e0e7ef;
+  padding-bottom: 10px;
+}
+.section-title { font-size: 24px; color: #1f3c88; margin: 0; display: flex; align-items: center; gap: 10px; }
+.section-title i { color: #1f3c88; }
+
+.upload-btn {
+  padding: 10px 22px;
+  border-radius: 25px;
+  background: #fbbf24;
+  color: #000;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+.upload-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.admin-btn { background: #1f3c88; color: #fff; margin-right: 10px; }
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+.sheet-card {
+  background: white;
+  border-radius: 22px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.08);
+  overflow: hidden;
+  text-decoration: none;
+  color: #000;
+  transition: .25s;
+}
+.sheet-card:hover { transform: translateY(-6px); }
+.sheet-thumb { height: 170px; background: #e6ecf5; }
+.sheet-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.sheet-body { padding: 16px; }
+.sheet-tag {
+  display: inline-block;
+  background: #f7d046;
+  color: #000;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.sheet-body h3 { font-size: 16px; margin: 0; color: #1f3c88; }
+
+/* Modal Styles Same as Before */
+.modal{ position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; justify-content: center; align-items: center; z-index: 999; }
+.modal-box{ background: #fff; width: 380px; padding: 30px; border-radius: 24px; text-align: center; }
+.profile-preview img{ width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
+.crop-btn{ margin-top: 8px; padding: 6px 16px; border-radius: 20px; border: none; background: #f7d046; cursor: pointer; font-family: 'Kanit', sans-serif; }
+.input-group { text-align: left; margin-top: 15px; }
+.input-group label { display: block; font-size: 14px; color: #666; margin-bottom: 5px; margin-left: 5px; }
+.modal-box input[type="text"]{ width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #ddd; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+.modal-actions{ display: flex; gap: 10px; margin-top: 10px; }
+.btn{ flex: 1; padding: 12px; border-radius: 20px; border: none; cursor: pointer; font-family: 'Kanit', sans-serif; font-weight: 500; }
+.btn.save{ background:#1f3c88; color:#fff; }
+.btn.cancel{ background:#eee; }
+
+</style>
+</head>
+
+<body>
+
+<div id="editProfileModal" class="modal">
+  <div class="modal-box">
+    <h2 style="color: #1f3c88; margin-top: 0;">แก้ไขโปรไฟล์</h2>
+    <div class="profile-preview">
+      <img id="previewImg" src="Exprofile.png">
+      <input type="file" id="profileFile" accept="image/*" style="display: block; margin: 10px auto; font-size: 12px;">
+      <button class="crop-btn" onclick="cropImage()">ครอปรูป</button>
+    </div>
+    <div class="input-group">
+      <label>ชื่อ</label>
+      <input type="text" id="editName" placeholder="กรอกชื่อ">
+      <label>นามสกุล</label>
+      <input type="text" id="editSurname" placeholder="กรอกนามสกุล">
+    </div>
+    <div class="modal-actions">
+      <button class="btn cancel" onclick="closeEdit()">ยกเลิก</button>
+      <button class="btn save" onclick="saveProfile()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div id="header"></div>
+
+<section class="profile-detail">
+  <button class="edit-profile-btn" title="แก้ไขโปรไฟล์">
+    <i class="fa-solid fa-pen-to-square"></i>
+  </button>
+
+  <div class="profile-left">
+    <img src="Exprofile.png" id="profileImg">
+    <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+  </div>
+
+  <div class="info">
+    <h1 class="user-title" id="userName"></h1>
+    <div class="tag-row">
+      <div class="tag blue" id="majorTag">กำลังโหลด...</div>
+      <div class="tag babyblue" id="yearTag">กำลังโหลด...</div>
+    </div>
+    <div class="stats-clean">
+        <span>ชีทที่เพิ่มโดยฉันทั้งหมด</span>
+        <h2 id="sheetCount">0</h2>
+    </div>
+  </div>
+</section>
+
+<div class="file-area">
+  <div class="file-header">
+    <h2 class="section-title"><i class="fa-solid fa-file-invoice"></i> ชีทของฉัน</h2>
+    <div class="btn-group">
+        <a href="Allearn_admin.html" class="upload-btn admin-btn" id="adminBtn" style="display: none;">Admin Dashboard</a>
+        <a href="Allearn_uploadui.html" class="upload-btn">+ เพิ่มชีทใหม่</a>
+    </div>
+  </div>
+  <div class="file-grid" id="mySheetGrid"></div>
+</div>
+
+<div class="file-area" style="margin-top: 60px;">
+  <div class="file-header">
+    <h2 class="section-title"><i class="fa-solid fa-heart" style="color: #ff6b6b;"></i> ชีทที่ถูกใจ</h2>
+  </div>
+  <div class="file-grid" id="favSheetGrid">
+      <p style="text-align: center; grid-column: 1/-1; color: #888;">กำลังโหลดชีทที่ถูกใจ...</p>
+  </div>
+</div>
+
+<script>
+const supabaseClient = supabase.createClient(
+  "https://ctfrqwehpvpldtiojedb.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0ZnJxd2VocHZwbGR0aW9qZWRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY0OTk3NDgsImV4cCI6MjA4MjA3NTc0OH0.48CcrKn7QoBq5ao9ENyy_DSgJLf5ieybk1pLUVNQyO0"
+)
+
+const IDACC = sessionStorage.getItem("idacc");
+if (!IDACC) {
+  alert("เซสชันหมดอายุหรือยังไม่ได้เข้าสู่ระบบ");
+  location.href = "Allearn_login.html";
+}
+
+fetch("Allearn_header.html")
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("header").innerHTML = data;
+    initSearchDropdown();
+  });
+
+function initSearchDropdown() {
+    const sInput = document.getElementById('headerSearchInput');
+    const sDropdown = document.getElementById('headerSearchDropdown');
+    if (!sInput) return;
+    sInput.addEventListener('focus', () => { sDropdown.classList.add('show'); loadSearchQuickTags(); });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.search-container')) sDropdown.classList.remove('show'); });
+}
+
+async function loadSearchQuickTags() {
+    const subList = document.getElementById('searchSubjectList');
+    const profList = document.getElementById('searchProfessorList');
+    try {
+        const [{ data: subjects }, { data: professors }] = await Promise.all([
+            supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(8),
+            supabaseClient.from("Professor").select("idprofessor, name").limit(8)
+        ]);
+        if (subjects && subList) subList.innerHTML = subjects.map(s => `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`).join('');
+        if (professors && profList) profList.innerHTML = professors.map(p => `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`).join('');
+    } catch (err) { console.error(err); }
+}
+
+loadUser();
+loadMySheets();
+loadFavoriteSheets(); // เรียกใช้งานฟังก์ชันใหม่
+
+async function loadUser() {
+  try {
+    const { data, error } = await supabaseClient
+      .from("Account")
+      .select(`name, surname, role, profile_img, Major(major_name), Year(year)`)
+      .eq("idacc", IDACC)
+      .single();
+
+    if (error) throw error;
+    if (data) {
+      document.getElementById("userName").textContent = `สวัสดี!, ${data.name} ${data.surname}`;
+      document.getElementById("majorTag").textContent = data.Major?.major_name || "ไม่ระบุสาขา";
+      document.getElementById("yearTag").textContent = data.Year?.year || "ไม่ระบุชั้นปี";
+      if (data.role === "Admin") document.getElementById("adminBtn").style.display = "inline-block";
+      
+      const profileImgEl = document.getElementById("profileImg");
+      profileImgEl.src = data.profile_img ? data.profile_img + "?t=" + Date.now() : "Exprofile.png";
+    }
+  } catch (err) { console.error(err); }
+}
+
+async function loadMySheets(){
+  const grid = document.getElementById("mySheetGrid");
+  const { data, error } = await supabaseClient.from("Sheet").select(`idsheet, sheet_name, sheet_cover, Subject(subject_name)`).eq("idacc", IDACC).order("idsheet", { ascending: false });
+  if (error) return;
+  document.getElementById("sheetCount").textContent = data.length;
+  grid.innerHTML = data.length === 0 ? `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">คุณยังไม่ได้เพิ่มชีทเลย</p>` : "";
+  data.forEach(s => {
+    grid.innerHTML += renderSheetCard(s);
+  });
+}
+
+// ฟังก์ชันใหม่: โหลดชีทที่ถูกใจ
+async function loadFavoriteSheets(){
+  const grid = document.getElementById("favSheetGrid");
+  try {
+    const { data, error } = await supabaseClient
+      .from("favsheet")
+      .select(`
+        idsheet,
+        Sheet (
+          idsheet,
+          sheet_name,
+          sheet_cover,
+          Subject (subject_name)
+        )
+      `)
+      .eq("idacc", IDACC);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">ยังไม่มีชีทที่ถูกใจ</p>`;
+      return;
+    }
+
+    grid.innerHTML = "";
+    data.forEach(item => {
+      if (item.Sheet) {
+        grid.innerHTML += renderSheetCard(item.Sheet);
+      }
+    });
+  } catch (err) {
+    console.error("Error loading favorites:", err);
+    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>`;
+  }
+}
+
+// ฟังก์ชันช่วย Render Card จะได้ไม่ต้องเขียนซ้ำ
+function renderSheetCard(s) {
+  return `
+    <a href="Allearn_content.html?idsheet=${s.idsheet}" class="sheet-card">
+        <div class="sheet-thumb">
+            <img src="${s.sheet_cover || 'Exsheet.png'}" onerror="this.src='Exsheet.png'">
+        </div>
+        <div class="sheet-body">
+            <span class="sheet-tag">${s.Subject?.subject_name || "ทั่วไป"}</span>
+            <h3>${s.sheet_name}</h3>
+        </div>
+    </a>`;
+}
+
+function logout(){ sessionStorage.clear(); location.href = "Allearn_login.html"; }
+</script>
+
+<script>
+/* ===== EDIT PROFILE SCRIPT ===== */
+const previewImg = document.getElementById("previewImg");
+const profileImg = document.getElementById("profileImg");
+const editName = document.getElementById("editName");
+const editSurname = document.getElementById("editSurname");
+
+let cropper;
+let croppedBlob = null;
+
+document.querySelector(".edit-profile-btn").addEventListener("click", async () => {
+  const { data } = await supabaseClient.from("Account").select("name, surname, profile_img").eq("idacc", IDACC).single();
+  if (data) {
+    editName.value = data.name || "";
+    editSurname.value = data.surname || "";
+    previewImg.src = (data.profile_img || "Exprofile.png") + "?t=" + Date.now();
+  }
+  document.getElementById("editProfileModal").style.display = "flex";
+});
+
+function closeEdit(){ document.getElementById("editProfileModal").style.display = "none"; }
+
+document.getElementById("profileFile").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  previewImg.src = URL.createObjectURL(file);
+  if (cropper) cropper.destroy();
+  cropper = new Cropper(previewImg, { aspectRatio: 1, viewMode: 1, autoCropArea: 1 });
+});
+
+function cropImage(){
+  if (!cropper) return;
+  cropper.getCroppedCanvas({ width: 400, height: 400 }).toBlob(blob => {
+    croppedBlob = blob;
+    previewImg.src = URL.createObjectURL(blob);
+    cropper.destroy(); cropper = null;
+  });
+}
+
+async function saveProfile(){
+  const name = editName.value.trim();
+  const surname = editSurname.value.trim();
+  const { data: old } = await supabaseClient.from("Account").select("profile_img").eq("idacc", IDACC).single();
+  let imageUrl = old?.profile_img || null;
+
+  if (croppedBlob) {
+    const fileName = `${IDACC}_${Date.now()}.png`;
+    const { error: uploadError } = await supabaseClient.storage.from("profile").upload(fileName, croppedBlob, { cacheControl: "3600", contentType: "image/png", upsert: true });
+    if (uploadError) return alert("อัปโหลดรูปไม่สำเร็จ");
+    const { data } = supabaseClient.storage.from("profile").getPublicUrl(fileName);
+    imageUrl = data.publicUrl;
+  }
+
+  await supabaseClient.from("Account").update({ name, surname, profile_img: imageUrl }).eq("idacc", IDACC); 
+  document.getElementById("userName").textContent = `สวัสดี!, ${name} ${surname}`;
+  if (imageUrl) profileImg.src = imageUrl + "?v=" + Date.now();
+  closeEdit();
+}
+</script>
+
+</body>
+</html>

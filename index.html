@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <link rel="stylesheet" href="Allearn_header.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    </script>
+
+    <title>Allearn - รวมกันเรียน</title>
+
+    <style>
+        body {
+            background:#f5f7fa;
+            font-family: 'Kanit', sans-serif;
+            background-image: linear-gradient(#e0e7ef 1px, transparent 1px);
+            background-size: 100% 40px;
+            margin: 0;
+        }
+
+        .hero {
+            display: flex;
+            padding: 80px 40px;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: auto;
+            gap: 50px;
+        }
+
+        .hero-content-box {
+            background-color: #fff9e6;
+            padding: 50px;
+            border-radius: 40px;
+            width: 50%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .hero-content-box h1 { font-size: 42px; color: #1f3c88; margin-top: 0; }
+        .hero-content-box p { font-size: 18px; color: #4a7599; }
+
+        .hero-img-only { width: 40%; }
+        .hero-img-only img {
+            width: 100%;
+            border-radius: 30px;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+        }
+
+        .btn-yellow {
+            display: inline-block;
+            padding: 15px 35px;
+            background: #ffeb3b;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #333;
+            transition: 0.3s;
+        }
+        .btn-yellow:hover { background: #f7d046; transform: scale(1.05); }
+
+        /* ===== CONTENT SECTION ===== */
+        .content-white {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 80px 20px 60px;
+            border-radius: 60px 60px 0 0;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
+        }
+
+        .section-title, .professor-title {
+            text-align: center;
+            color: #1f3c88;
+            margin-bottom: 40px;
+            font-size: 32px;
+        }
+
+        /* ===== SHEET GRID ===== */
+        .sheet-section { max-width:1200px; margin:auto; margin-bottom: 80px; }
+        .sheet-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .sheet-card {
+            background:white;
+            border-radius:22px;
+            box-shadow:0 8px 22px rgba(0,0,0,.08);
+            overflow:hidden;
+            text-decoration:none;
+            color:#000;
+            transition:.25s;
+        }
+        .sheet-card:hover { transform:translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
+        .sheet-thumb { height:170px; background:#e6ecf5; }
+        .sheet-thumb img { width:100%; height:100%; object-fit:cover; }
+        
+        .sheet-body { padding:16px; }
+        .sheet-tag {
+            display:inline-block;
+            background:#f7d046;
+            color:#000;
+            padding:4px 14px;
+            border-radius:999px;
+            font-size:12px;
+            margin-bottom:10px;
+            font-weight: 500;
+        }
+
+        .sheet-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .sheet-body h3 { font-size:16px; margin:0; color:#1f3c88; flex: 1; line-height: 1.4; }
+        
+        .sheet-fav-count {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #ff4757;
+            font-weight: 500;
+        }
+
+        .professor-section { max-width: 1100px; margin: auto; }
+        .professor-scroll {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 10px;
+            scrollbar-width: thin;
+        }
+        .professor-scroll::-webkit-scrollbar { height: 6px; }
+        .professor-scroll::-webkit-scrollbar-thumb { background: #f7d046; border-radius: 10px; }
+        
+        .professor-card {
+            width: 220px;
+            min-height: 280px;
+            background: white;
+            border-radius: 25px;
+            padding: 25px 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            flex-shrink: 0;
+        }
+        .professor-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        
+        .professor-card img { 
+            width: 120px; 
+            height: 120px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin-bottom: 20px; 
+            border: 3px solid #f7d046;
+            flex-shrink: 0;
+        }
+
+        .professor-card h3 { 
+            font-size: 17px; 
+            color: #1f3c88; 
+            margin: 0; 
+            line-height: 1.4;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        .footer { background: #000; color: #fff; padding: 60px 40px; margin-top: 80px; }
+
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; text-align: center; }
+            .hero-content-box, .hero-img-only { width: 100%; }
+            .sheet-grid { grid-template-columns: repeat(1, 1fr); }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="header"></div>
+
+<section class="hero">
+    <div class="hero-content-box">
+        <h1>เพื่อนยามยากที่จะพาเราเรียนเข้าใจทุกบทเรียน</h1>
+        <p>แหล่งรวมชีทสรุปสำหรับวิชาต่าง ๆ ภายในคณะวิทยาศาสตร์และเทคโนโลยี มทร.พระนคร</p>
+        <a href="Allearn_login.html" class="btn-yellow" id="heroBtn">ยังไม่มีบัญชีใช่หรือไม่</a>
+    </div>
+    <div class="hero-img-only">
+        <img src="pepstudy.jpg" alt="Study">
+    </div>
+</section>
+
+<div class="content-white">
+    <h2 class="section-title">ชีทแนะนำล่าสุด</h2>
+    <section class="sheet-section">
+        <div class="sheet-grid" id="sheetGrid">
+            <p style="text-align:center; grid-column: 1/-1;">กำลังโหลดชีท...</p>
+        </div>
+    </section>
+
+    <section class="professor-section">
+        <h2 class="professor-title">อาจารย์คณะวิทยาศาสตร์และเทคโนโลยี</h2>
+        <div class="professor-scroll" id="professorScroll"></div>
+    </section>
+</div>
+
+<footer class="footer">
+    <div style="max-width: 1200px; margin: auto;">
+        <h2>ติดต่อเรา</h2>
+        <p>คณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร (ศูนย์พระนครเหนือ)<br>
+           เลขที่ 1381 ถนนประชาราษฎร์ 1 แขวงวงศ์สว่าง เขตบางซื่อ กรุงเทพฯ 10800<br>
+           โทรศัพท์ : 02-836-3000 ต่อ 4194, 4155</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const supabaseClient = supabase.createClient(
+        'https://ctfrqwehpvpldtiojedb.supabase.co',
+        'sb_publishable_YHDQnG7VsNgb4O4i6MPN5g_lgU5eOGI'
+    );
+
+    fetch("Allearn_header.html")
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById("header").innerHTML = data;
+            initSearchDropdown();
+        });
+
+    function initSearchDropdown() {
+        const sInput = document.getElementById('headerSearchInput');
+        const sDropdown = document.getElementById('headerSearchDropdown');
+        if (!sInput) return;
+        sInput.addEventListener('focus', () => { sDropdown.classList.add('show'); loadSearchQuickTags(); });
+        document.addEventListener('click', (e) => { if (!e.target.closest('.search-container')) sDropdown.classList.remove('show'); });
+    }
+
+    async function loadSearchQuickTags() {
+        const subList = document.getElementById('searchSubjectList');
+        const profList = document.getElementById('searchProfessorList');
+        try {
+            const [{ data: subjects }, { data: professors }] = await Promise.all([
+                supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(8),
+                supabaseClient.from("Professor").select("idprofessor, name").limit(8)
+            ]);
+            if (subjects && subList) subList.innerHTML = subjects.map(s => `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`).join('');
+            if (professors && profList) profList.innerHTML = professors.map(p => `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`).join('');
+        } catch (err) {}
+    }
+
+    async function loadLatestSheets() {
+        const grid = document.getElementById("sheetGrid");
+        const { data, error } = await supabaseClient
+            .from("Sheet")
+            .select(`
+                idsheet,
+                sheet_name,
+                sheet_cover,
+                idsubject,
+                Subject:idsubject (subject_name),
+                favsheet(count)
+            `)
+            .order("created_at", { ascending: false })
+            .limit(6);
+
+        if (error) {
+            grid.innerHTML = "<p>โหลดข้อมูลไม่สำเร็จ</p>";
+            return;
+        }
+
+        grid.innerHTML = data.map(s => {
+            const likeCount = s.favsheet?.[0]?.count || 0;
+            return `
+                <a href="Allearn_content.html?idsheet=${s.idsheet}" class="sheet-card">
+                    <div class="sheet-thumb">
+                        <img src="${s.sheet_cover || 'Exsheet.png'}" onerror="this.src='Exsheet.png'">
+                    </div>
+                    <div class="sheet-body">
+                        <span class="sheet-tag">${s.Subject?.subject_name || 'ทั่วไป'}</span>
+                        <div class="sheet-title-row">
+                            <h3>${s.sheet_name}</h3>
+                            <div class="sheet-fav-count">
+                                <i class="fa-solid fa-heart"></i>
+                                <span>${likeCount}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join("");
+    }
+
+    async function loadProfessor() {
+        const scroll = document.getElementById("professorScroll");
+        const { data, error } = await supabaseClient.from("Professor").select("idprofessor, name, surname, img_professor").limit(10);
+        if (error) return;
+        
+        scroll.innerHTML = data.map(p => `
+            <a href="Allearn_professor.html?id=${p.idprofessor}" style="text-decoration:none; color:inherit; flex-shrink:0;">
+                <div class="professor-card">
+                    <img src="${p.img_professor || 'img/professor-default.jpg'}" onerror="this.src='img/professor-default.jpg'">
+                    <h3>${p.name}<br>${p.surname}</h3>
+                </div>
+            </a>
+        `).join('');
+    }
+
+    loadLatestSheets();
+    loadProfessor();
+</script>
+
+<script type="module">
+    const idacc = sessionStorage.getItem("idacc");
+    const heroBtn = document.getElementById("heroBtn");
+    if (idacc && heroBtn) heroBtn.style.display = "none";
+</script>
+
+</body>
+</html>

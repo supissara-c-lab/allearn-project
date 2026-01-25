@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <title>Allearn - แก้ไขข้อมูล</title>
+    
+    <style>
+        :root {
+            --card-bg: #FFF9E5;
+            --primary-blue: #456E94;
+            --tag-blue: #60a5fa;
+            --tag-red: #f87171;
+            --tag-yellow: #fbbf24;
+        }
+
+        body {
+            font-family: 'Kanit', sans-serif;
+            margin: 0; padding: 40px 20px;
+            min-height: 100vh;
+            background-color: #cbdcf0;
+            background-image: linear-gradient(#9fbfd6 1px, transparent 1px);
+            background-size: 100% 35px;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .container { width: 100%; max-width: 800px; }
+
+        .sheet-card {
+            background-color: var(--card-bg);
+            border-radius: 40px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex; flex-direction: row; gap: 30px;
+            position: relative;
+        }
+
+        .upload-section {
+            flex: 0 0 150px;
+            display: flex; flex-direction: column; align-items: center; padding-top: 20px;
+        }
+
+        .file-drop-area {
+            width: 120px; height: 140px;
+            background-color: #fff;
+            border: 2px dashed #ccc;
+            border-radius: 15px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s;
+            text-align: center; padding: 10px;
+            color: #888; font-size: 0.9rem;
+            position: relative; overflow: hidden;
+        }
+
+        .file-drop-area:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
+        .file-drop-area input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-icon { font-size: 40px; margin-bottom: 10px; }
+
+        .info-section { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+
+        .title-bubble {
+            background-color: var(--primary-blue); color: white;
+            padding: 15px 30px; border-radius: 20px;
+            position: relative; font-weight: 600; font-size: 1.2rem;
+            width: 100%; display: flex; align-items: center;
+        }
+
+        input.title-input {
+            background: transparent; border: none; color: white;
+            font-family: 'Kanit', sans-serif; font-size: 1.2rem;
+            width: 100%; outline: none;
+        }
+
+        .tags-row { display: flex; flex-wrap: wrap; gap: 10px; }
+        select {
+            appearance: none; border: none;
+            padding: 8px 15px; border-radius: 20px;
+            font-family: 'Kanit', sans-serif; font-size: 0.9rem;
+            color: white; font-weight: 500; cursor: pointer;
+            outline: none; min-width: 140px;
+        }
+        #subjectSelect { background-color: var(--tag-blue); }
+        #professorSelect { background-color: var(--tag-red); }
+
+        textarea {
+            width: 100%; box-sizing: border-box; background-color: #fff; 
+            border: 1px solid #eee; border-radius: 20px; padding: 15px; 
+            font-family: 'Kanit', sans-serif; font-size: 1rem;
+            resize: vertical; outline: none; min-height: 120px;
+        }
+
+        button#saveBtn {
+            background-color: var(--tag-yellow); color: #fff; border: none;
+            padding: 12px 40px; border-radius: 25px;
+            font-family: 'Kanit', sans-serif; font-weight: 600;
+            cursor: pointer; transition: 0.2s;
+        }
+        button#saveBtn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="sheet-card">
+        <div class="upload-section">
+            <div class="file-drop-area">
+                <span class="file-icon">📄</span>
+                <span class="file-msg" id="fileNameDisplay">เปลี่ยนไฟล์ PDF (ถ้ามี)</span>
+                <input type="file" id="pdfFile" accept="application/pdf">
+            </div>
+            <p style="font-size: 10px; color: #aaa; margin-top: 10px;">* หากไม่เลือกไฟล์ใหม่ จะใช้ไฟล์เดิม</p>
+        </div>
+
+        <div class="info-section">
+            <div class="title-bubble">
+                <input type="text" id="sheetName" class="title-input" placeholder="ชื่อชีทสรุป">
+            </div>
+
+            <div class="tags-row">
+                <select id="subjectSelect">
+                    <option value="">-- เลือกวิชา --</option>
+                </select>
+                <select id="professorSelect">
+                    <option value="">-- เลือกอาจารย์ --</option>
+                </select>
+            </div>
+
+            <div class="desc-wrapper">
+                <textarea id="sheetDesc" rows="4" placeholder="คำอธิบายชีทสรุป..."></textarea>
+            </div>
+
+            <div class="action-row" style="display:flex; justify-content: space-between; align-items: center;">
+                <a href="#" onclick="history.back()" style="color: #888; text-decoration: none; font-size: 14px;">ย้อนกลับ</a>
+                <button id="saveBtn">SAVE CHANGES</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const supabaseClient = supabase.createClient(
+  "https://ctfrqwehpvpldtiojedb.supabase.co",
+  "sb_publishable_YHDQnG7VsNgb4O4i6MPN5g_lgU5eOGI"
+);
+
+const params = new URLSearchParams(window.location.search);
+const IDSHEET = params.get("idsheet");
+const currentUserId = sessionStorage.getItem("idacc");
+
+const subjectSelect = document.getElementById("subjectSelect");
+const professorSelect = document.getElementById("professorSelect");
+const saveBtn = document.getElementById("saveBtn");
+const fileNameDisplay = document.getElementById("fileNameDisplay");
+
+let originalFilePath = ""; 
+
+async function initData() {
+    if (!IDSHEET) { alert("ไม่พบรหัสชีท"); return; }
+
+    const { data: subjects } = await supabaseClient.from("Subject").select("idsubject, subject_name").order("subject_name");
+    subjects.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.idsubject; opt.textContent = s.subject_name;
+        subjectSelect.appendChild(opt);
+    });
+
+    loadOriginalData();
+}
+
+async function loadOriginalData() {
+    const { data, error } = await supabaseClient
+        .from("Sheet")
+        .select("*")
+        .eq("idsheet", IDSHEET)
+        .single();
+
+    if (error || !data) { alert("ดึงข้อมูลล้มเหลว"); return; }
+
+    document.getElementById("sheetName").value = data.sheet_name;
+    document.getElementById("sheetDesc").value = data.description;
+    subjectSelect.value = data.idsubject;
+    originalFilePath = data.file_path;
+    
+    fileNameDisplay.textContent = "ใช้ไฟล์เดิม";
+
+    await loadProfessors(data.idsubject, data.idprofessor);
+}
+
+async function loadProfessors(idsubject, selectedProfId = null) {
+    professorSelect.innerHTML = `<option value="">-- เลือกอาจารย์ --</option>`;
+    if (!idsubject) return;
+
+    const { data } = await supabaseClient
+        .from("professor_subject")
+        .select("idprofessor, Professor(name, surname)")
+        .eq("idsubject", idsubject);
+
+    data?.forEach(p => {
+        if(p.Professor) {
+            const opt = document.createElement("option");
+            opt.value = p.idprofessor;
+            opt.textContent = `${p.Professor.name} ${p.Professor.surname}`;
+            if (selectedProfId && p.idprofessor == selectedProfId) opt.selected = true;
+            professorSelect.appendChild(opt);
+        }
+    });
+}
+
+subjectSelect.onchange = () => loadProfessors(subjectSelect.value);
+
+document.getElementById('pdfFile').addEventListener('change', e => {
+    const file = e.target.files[0];
+    fileNameDisplay.textContent = file ? (file.name.substring(0, 10) + "...") : "ใช้ไฟล์เดิม";
+});
+
+saveBtn.onclick = async () => {
+    const file = document.getElementById("pdfFile").files[0];
+    const name = document.getElementById("sheetName").value.trim();
+    const desc = document.getElementById("sheetDesc").value.trim();
+    const subId = subjectSelect.value;
+    const profId = professorSelect.value;
+
+    if (!name || !subId || !profId) return alert("กรุณากรอกข้อมูลให้ครบ");
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving...";
+
+    let finalPath = originalFilePath;
+
+    // ถ้ามีการอัปโหลดไฟล์ใหม่
+    if (file) {
+        const safeFileName = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`;
+        const newPath = `sheets/${currentUserId}/${safeFileName}`;
+        
+        const { error: uploadError } = await supabaseClient.storage
+            .from("sheet-pdf").upload(newPath, file);
+
+        if (uploadError) {
+            alert("Upload Error: " + uploadError.message);
+            saveBtn.disabled = false; return;
+        }
+        finalPath = newPath;
+    }
+
+    const { error: updateError } = await supabaseClient
+        .from("Sheet")
+        .update({
+            sheet_name: name,
+            description: desc,
+            file_path: finalPath,
+            idsubject: subId,
+            idprofessor: profId
+        })
+        .eq("idsheet", IDSHEET);
+
+    if (updateError) {
+        alert("Update Error: " + updateError.message);
+    } else {
+        alert("แก้ไขข้อมูลสำเร็จ 🎉");
+        location.href = `Allearn_content.html?idsheet=${IDSHEET}`; // กลับไปหน้าเนื้อหา
+    }
+    saveBtn.disabled = false;
+    saveBtn.textContent = "SAVE CHANGES";
+};
+
+initData();
+</script>
+
+</body>
+</html>

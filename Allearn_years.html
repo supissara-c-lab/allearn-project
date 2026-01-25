@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="Allearn_header.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+        <title>Allearn - ชีททั้งหมด</title>
+
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            background-image: linear-gradient(#e0e7ef 1px, transparent 1px);
+            background-size: 100% 40px;
+        }
+
+        /* ===== TITLE SECTION ===== */
+        .page-title {
+            max-width: 1100px;
+            margin: 50px auto 20px;
+            padding: 40px;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,.05);
+            text-align: center;
+        }
+
+        .page-title h1 { margin: 0 0 8px; color: #1f3c88; font-size: 32px; }
+        .page-title p { margin: 0 0 10px; color: #4a7599; }
+
+        .subject-tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .subject-filter-tag {
+            background: #e0e7ef; color: #4a7599; padding: 8px 20px; border-radius: 999px;
+            font-size: 14px; font-weight: 500; border: none; cursor: pointer; transition: all 0.3s ease;
+        }
+        .subject-filter-tag:hover { background: #d1d9e6; transform: translateY(-2px); }
+        .subject-filter-tag.active {
+            background: #f7d046; color: #000; box-shadow: 0 4px 12px rgba(247, 208, 70, 0.4);
+            font-weight: 600; transform: translateY(-2px);
+        }
+
+        /* ===== SHEET GRID SECTION ===== */
+        .sheet-section { max-width: 1200px; margin: 40px auto 80px; padding: 0 20px; }
+        .sheet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+        }
+
+        .sheet-card {
+            background: white; border-radius: 22px; box-shadow: 0 8px 22px rgba(0,0,0,.08);
+            overflow: hidden; text-decoration: none; color: #000; transition: .25s; display: block;
+        }
+        .sheet-card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,.12); }
+        .sheet-thumb { height: 180px; background: #e6ecf5; }
+        .sheet-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .sheet-body { padding: 20px; }
+        .sheet-tag {
+            display: inline-block; background: #f7d046; color: #000; padding: 4px 14px;
+            border-radius: 999px; font-size: 12px; margin-bottom: 10px; font-weight: 500;
+        }
+
+        /* เพิ่มการจัดวางชื่อชีทและยอด Like */
+        .sheet-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .sheet-body h3 { font-size: 17px; margin: 0; color: #1f3c88; line-height: 1.4; flex: 1; }
+        
+        .sheet-fav-count {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #ff4757;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="header"></div>
+
+<section class="page-title">
+    <h1 id="yearTitle">กำลังโหลด…</h1>
+    <p id="yearSubtitle"></p>
+    <div id="subjectTags" class="subject-tags-container"></div>
+</section>
+
+<section class="sheet-section">
+    <div class="sheet-grid" id="sheetGrid">
+        <p style="text-align:center; grid-column: 1/-1; color: #4a7599; padding: 50px;">กำลังค้นหาชีทในชั้นปี...</p>
+    </div>
+</section>
+
+<script>
+    const supabaseClient = supabase.createClient(
+        'https://ctfrqwehpvpldtiojedb.supabase.co',
+        'sb_publishable_YHDQnG7VsNgb4O4i6MPN5g_lgU5eOGI'
+    );
+
+    fetch("Allearn_header.html").then(r => r.text()).then(t => {
+        document.getElementById("header").innerHTML = t;
+        initSearchDropdown();
+    });
+
+    function initSearchDropdown() {
+        const sInput = document.getElementById('headerSearchInput');
+        const sDropdown = document.getElementById('headerSearchDropdown');
+        if (!sInput) return;
+        sInput.addEventListener('focus', () => { sDropdown.classList.add('show'); loadSearchQuickTags(); });
+        document.addEventListener('click', (e) => { if (!e.target.closest('.search-container')) sDropdown.classList.remove('show'); });
+    }
+
+    async function loadSearchQuickTags() {
+        const subList = document.getElementById('searchSubjectList');
+        const profList = document.getElementById('searchProfessorList');
+        try {
+            const [{ data: subs }, { data: profs }] = await Promise.all([
+                supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(8),
+                supabaseClient.from("Professor").select("idprofessor, name").limit(8)
+            ]);
+            if (subs && subList) subList.innerHTML = subs.map(s => `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`).join('');
+            if (profs && profList) profList.innerHTML = profs.map(p => `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`).join('');
+        } catch (e) {}
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const IDYEAR = params.get("idyear");
+    const TARGET_SUB = params.get("target_sub");
+    const yearMap = { Y01: "ชั้นปีที่ 1", Y02: "ชั้นปีที่ 2", Y03: "ชั้นปีที่ 3", Y04: "ชั้นปีที่ 4" };
+
+    const titleEl = document.getElementById("yearTitle");
+    const subEl = document.getElementById("yearSubtitle");
+    const subjectTagsEl = document.getElementById("subjectTags");
+    const grid = document.getElementById("sheetGrid");
+    let allSheets = []; 
+
+    if (!IDYEAR || !yearMap[IDYEAR]) {
+        titleEl.textContent = "ไม่พบข้อมูลชั้นปี";
+        grid.innerHTML = "";
+    } else {
+        titleEl.textContent = yearMap[IDYEAR];
+        subEl.textContent = "รายวิชาที่เปิดสอน"; 
+        loadData();
+    }
+
+    async function loadData() {
+        try {
+            const { data: subjects } = await supabaseClient.from("Subject").select("idsubject, subject_name").eq("idyear", IDYEAR);
+
+            if (subjects && subjects.length > 0) {
+                let tagsHtml = `<button class="subject-filter-tag active" id="btn-all" onclick="filterBySubject('all', this)">ทั้งหมด</button>`;
+                tagsHtml += subjects.map(s => `<button class="subject-filter-tag" id="btn-${s.idsubject}" onclick="filterBySubject('${s.idsubject}', this)">${s.subject_name}</button>`).join('');
+                subjectTagsEl.innerHTML = tagsHtml;
+                
+                const subjectIds = subjects.map(s => s.idsubject);
+
+                // ปรับ Query ให้ดึง favsheet(count)
+                const { data: sheets, error: sheetErr } = await supabaseClient
+                    .from("Sheet")
+                    .select(`idsheet, sheet_name, idsubject, sheet_cover, Subject (subject_name), favsheet(count)`)
+                    .in("idsubject", subjectIds)
+                    .order("idsheet", { ascending: false });
+
+                if (sheetErr) throw sheetErr;
+                
+                allSheets = sheets;
+                displaySheets(allSheets); 
+
+                if (TARGET_SUB) {
+                    const targetBtn = document.getElementById(`btn-${TARGET_SUB}`);
+                    if (targetBtn) filterBySubject(TARGET_SUB, targetBtn);
+                }
+            }
+        } catch (err) { console.error(err); }
+    }
+
+    function displaySheets(sheetsToDisplay) {
+        if (!sheetsToDisplay || sheetsToDisplay.length === 0) {
+            grid.innerHTML = "<p style='grid-column:1/-1; text-align:center; color:#888; padding: 50px;'>ยังไม่มีชีทสำหรับหมวดหมู่นี้</p>";
+            return;
+        }
+
+        grid.innerHTML = sheetsToDisplay.map(s => {
+            const likeCount = s.favsheet?.[0]?.count || 0; // ดึงยอด count จากการ query
+            return `
+                <a href="Allearn_content.html?idsheet=${s.idsheet}" class="sheet-card">
+                    <div class="sheet-thumb">
+                        <img src="${s.sheet_cover || 'Exsheet.png'}" onerror="this.src='Exsheet.png'">
+                    </div>
+                    <div class="sheet-body">
+                        <span class="sheet-tag">${s.Subject?.subject_name || "ทั่วไป"}</span>
+                        <div class="sheet-title-row">
+                            <h3>${s.sheet_name}</h3>
+                            <div class="sheet-fav-count">
+                                <i class="fa-solid fa-heart"></i>
+                                <span>${likeCount}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join('');
+    }
+
+    function filterBySubject(subjectId, btnElement) {
+        document.querySelectorAll('.subject-filter-tag').forEach(btn => btn.classList.remove('active'));
+        btnElement.classList.add('active');
+        const filtered = (subjectId === 'all') ? allSheets : allSheets.filter(s => s.idsubject === subjectId);
+        displaySheets(filtered);
+    }
+</script>
+
+</body>
+</html>

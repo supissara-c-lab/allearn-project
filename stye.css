@@ -1,0 +1,92 @@
+/* CARD BASE */
+.card {
+    color: #1e1e1e;
+}
+.card h3 {
+    margin: 12px 0 8px;
+    font-size: 16px;
+}
+
+/* IMAGE */
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* TAG */
+.tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #fff;
+}
+.tag.red { background: #e53935; }
+.tag.blue { background: #1e88e5; }
+.tag.green { background: #43a047; }
+
+/* TOP TAG */
+.tag-top {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff5252;
+    color: white;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    z-index: 5;
+}
+
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 30px 0;
+}
+.page-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.page-btn.active,
+.page-btn:hover {
+    background: #ffeb3b;
+    color: #333;
+}
+
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #7ea6c4;
+    font-size: 18px;
+
+    overflow-x: auto;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.menu::-webkit-scrollbar {
+    display: none;
+}
+ .menu div {
+    flex-shrink: 0;
+    padding: 18px 35px;
+    color: #ffffff;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+    border-bottom: 4px solid transparent;
+}
+.menu {
+    padding: 0 10px;
+}

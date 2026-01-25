@@ -1,0 +1,178 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 10px 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 1000;
+}
+
+header img.logo {
+    height: 80px;
+}
+
+/* ===== RIGHT ZONE ===== */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* ===== DROPDOWN (วิชา/ผลงาน) ===== */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    background: #4f8fd8;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-family: "Kanit", sans-serif;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.dropdown-btn:hover {
+    background: #3b78bd;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 115%;
+    left: 0;
+    background: #ffffff;
+    border-radius: 16px;
+    min-width: 260px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    display: none;
+    overflow: hidden;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.dropdown-menu a:hover {
+    background: #f0f6ff;
+    color: #60a5fa;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* ===== SEARCH CONTAINER & PANEL ===== */
+.search-container {
+    position: relative;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    background: #f7d046; /* สีเหลือง Allearn */
+    padding: 8px 18px;
+    border-radius: 25px;
+    border: 2px solid #e3d738;
+    transition: 0.3s;
+    width: 180px;
+}
+
+.search:focus-within {
+    background: #fff;
+    width: 250px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.search input {
+    border: none;
+    background: transparent;
+    outline: none;
+    margin-left: 8px;
+    font-size: 15px;
+    width: 100%;
+    font-family: 'Kanit', sans-serif;
+}
+
+/* แผง Dropdown ค้นหา */
+.search-results-panel {
+    display: none;
+    position: absolute;
+    top: 130%;
+    right: 0;
+    width: 420px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+    padding: 25px;
+    border: 1px solid #eee;
+}
+
+.search-results-panel.show {
+    display: block;
+    animation: fadeInSlide 0.2s ease-out;
+}
+
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.search-section h4 {
+    margin: 0 0 12px 0;
+    color: #1f3c88;
+    font-size: 16px;
+    font-weight: 600;
+    border-left: 4px solid #f7d046;
+    padding-left: 10px;
+}
+
+.tags-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.search-tag-link {
+    background: #f0f4f8;
+    color: #4a7599;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.search-tag-link:hover {
+    background: #f7d046;
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.search-divider {
+    height: 1px;
+    background: #f0f0f0;
+    margin: 20px 0;
+}
+
+.loading-text {
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* ===== PROFILE ICON ===== */
+.icon {
+    font-size: 28px;
+    text-decoration: none;
+    cursor: pointer;
+}
