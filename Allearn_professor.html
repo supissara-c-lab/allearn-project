@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<title>Allearn - ข้อมูลคณาจารย์</title>
+<title>Allearn</title>
 
 <style>
 :root {
@@ -275,20 +275,28 @@ async function loadSearchQuickTags() {
     const profList = document.getElementById('searchProfessorList');
     try {
         const [{ data: subjects }, { data: professors }] = await Promise.all([
-            supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(8),
-            supabaseClient.from("Professor").select("idprofessor, name").limit(8)
+            supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(10),
+            supabaseClient.from("Professor")
+                .select("idprofessor, name")
+                .order("idprofessor", { ascending: true })
+                .limit(10)
         ]);
+
+        // แก้ชื่อตัวแปรให้ตรงกับข้างบน (subjects และ professors)
         if (subjects && subList) {
             subList.innerHTML = subjects.map(s => 
                 `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`
             ).join('');
         }
+
         if (professors && profList) {
             profList.innerHTML = professors.map(p => 
                 `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`
             ).join('');
         }
-    } catch (err) { console.error("Error loading quick tags:", err); }
+    } catch (e) { 
+        console.error("Search Error:", e); 
+    }
 }
 
 /* ===== 2. การดึงข้อมูลอาจารย์ ===== */

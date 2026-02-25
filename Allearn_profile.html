@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
-<title>Allearn - ข้อมูลบัญชีผู้ใช้</title>
+<title>Allearn</title>
 
 <style>
 :root {
@@ -323,12 +323,28 @@ async function loadSearchQuickTags() {
     const profList = document.getElementById('searchProfessorList');
     try {
         const [{ data: subjects }, { data: professors }] = await Promise.all([
-            supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(8),
-            supabaseClient.from("Professor").select("idprofessor, name").limit(8)
+            supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(10),
+            supabaseClient.from("Professor")
+                .select("idprofessor, name")
+                .order("idprofessor", { ascending: true })
+                .limit(10)
         ]);
-        if (subjects && subList) subList.innerHTML = subjects.map(s => `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`).join('');
-        if (professors && profList) profList.innerHTML = professors.map(p => `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`).join('');
-    } catch (err) { console.error("Error loading quick tags:", err); }
+
+        // แก้ชื่อตัวแปรให้ตรงกับข้างบน (subjects และ professors)
+        if (subjects && subList) {
+            subList.innerHTML = subjects.map(s => 
+                `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`
+            ).join('');
+        }
+
+        if (professors && profList) {
+            profList.innerHTML = professors.map(p => 
+                `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`
+            ).join('');
+        }
+    } catch (e) { 
+        console.error("Search Error:", e); 
+    }
 }
 
 // Main Data Loading

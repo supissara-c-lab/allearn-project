@@ -14,7 +14,7 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     </script>
 
-    <title>Allearn - แพลตฟอร์มเพื่อการเรียนรู้อย่างเป็นระบบ</title>
+    <title>Allearn</title>
 
     <style>
         :root {
@@ -302,9 +302,12 @@
         const profList = document.getElementById('searchProfessorList');
         try {
             const [{ data: subjects }, { data: professors }] = await Promise.all([
-                supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(8),
-                supabaseClient.from("Professor").select("idprofessor, name").limit(8)
-            ]);
+    supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(10),
+    supabaseClient.from("Professor")
+        .select("idprofessor, name")
+        .order("idprofessor", { ascending: true })
+        .limit(10) // เอาแค่ 10 คนแรก (P01-P10)
+]);
             if (subjects && subList) subList.innerHTML = subjects.map(s => `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`).join('');
             if (professors && profList) profList.innerHTML = professors.map(p => `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`).join('');
         } catch (err) {}

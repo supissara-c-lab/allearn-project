@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
 
+/* ===== คลุมโทนพื้นฐาน ===== */
 header {
     display: flex;
     justify-content: space-between;
@@ -14,7 +15,7 @@ header {
 }
 
 header img.logo {
-    height: 60px; /* ลดความสูงลงเล็กน้อยเพื่อความทันสมัย */
+    height: 60px;
     width: auto;
     object-fit: contain;
 }
@@ -37,7 +38,7 @@ header img.logo {
     gap: 15px;
 }
 
-/* ===== DROPDOWN ===== */
+/* ===== DROPDOWN (วิชา/ผลงาน) ===== */
 .dropdown {
     position: relative;
 }
@@ -90,7 +91,7 @@ header img.logo {
     display: block;
 }
 
-/* ===== SEARCH CONTAINER ===== */
+/* ===== SEARCH CONTAINER & INPUT ===== */
 .search-container {
     position: relative;
 }
@@ -103,7 +104,7 @@ header img.logo {
     border-radius: 25px;
     border: 2px solid #e3d738;
     transition: 0.3s;
-    width: 160px; /* ความกว้างเริ่มต้นในจอคอม */
+    width: 160px;
 }
 
 .search:focus-within {
@@ -121,27 +122,90 @@ header img.logo {
     font-family: inherit;
 }
 
+/* ===== แผงแสดงผลการค้นหา (ปรับปรุงใหม่) ===== */
 .search-results-panel {
     display: none;
     position: absolute;
     top: 130%;
     right: 0;
-    width: 400px;
+    width: 420px;
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+    padding: 25px;
     border: 1px solid #eee;
 }
 
-.search-results-panel.show { display: block; }
+.search-results-panel.show {
+    display: block;
+    animation: fadeInSlide 0.2s ease-out;
+}
 
-/* ===== ICON ===== */
+@keyframes fadeInSlide {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.search-section h4 {
+    margin: 0 0 12px 0;
+    color: #1f3c88;
+    font-size: 15px;
+    font-weight: 600;
+    border-left: 4px solid #f7d046;
+    padding-left: 10px;
+}
+
+/* การจัดวางกลุ่มแท็ก */
+.tags-group {
+    display: flex;
+    flex-wrap: wrap; /* ทำให้แท็กตัดบรรทัดใหม่สวยงาม */
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* สไตล์แคปซูลสำหรับ รายวิชา/อาจารย์ */
+.tags-group a, 
+.tags-group .loading-text {
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.tags-group a {
+    background: #f0f4f8;
+    color: #4a7599;
+    padding: 6px 14px;
+    border-radius: 12px;
+    border: 1px solid #e0e7ef;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.tags-group a:hover {
+    background: #f7d046;
+    color: #000;
+    border-color: #f7d046;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.search-divider {
+    height: 1px;
+    background: #f0f0f0;
+    margin: 18px 0;
+}
+
+.loading-text {
+    color: #aaa;
+    font-style: italic;
+}
+
+/* ===== PROFILE ICON ===== */
 .icon {
     font-size: 24px;
     text-decoration: none;
     color: #555;
     transition: 0.2s;
+    cursor: pointer;
 }
 
 .icon:hover { color: #1f3c88; }
@@ -153,7 +217,7 @@ header img.logo {
     .mobile-menu-btn { display: block; }
 
     .header-right {
-        display: none; /* ซ่อนเมนูแนวนอน */
+        display: none;
         position: absolute;
         top: 100%;
         left: 0;
@@ -161,10 +225,10 @@ header img.logo {
         background: #fff;
         flex-direction: column;
         padding: 20px;
-        gap: 15px;
+        gap: 20px;
         box-shadow: 0 10px 15px rgba(0,0,0,0.1);
         box-sizing: border-box;
-        max-height: 80vh;
+        max-height: 85vh;
         overflow-y: auto;
     }
 
@@ -192,7 +256,7 @@ header img.logo {
     }
     
     .icon {
-        padding: 10px 0;
+        padding: 15px 0;
         width: 100%;
         text-align: center;
         border-top: 1px solid #eee;

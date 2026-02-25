@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<title>Allearn - รายละเอียดเอกสารประกอบการเรียน</title>
+<title>Allearn</title>
 
 <style>
 :root {
@@ -230,13 +230,29 @@ async function loadSearchQuickTags() {
     const subList = document.getElementById('searchSubjectList');
     const profList = document.getElementById('searchProfessorList');
     try {
-        const [{ data: subs }, { data: profs }] = await Promise.all([
-            supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(8),
-            supabaseClient.from("Professor").select("idprofessor, name").limit(8)
+        const [{ data: subjects }, { data: professors }] = await Promise.all([
+            supabaseClient.from("Subject").select("idsubject, subject_name, idyear").limit(10),
+            supabaseClient.from("Professor")
+                .select("idprofessor, name")
+                .order("idprofessor", { ascending: true })
+                .limit(10)
         ]);
-        if (subs && subList) subList.innerHTML = subs.map(s => `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`).join('');
-        if (profs && profList) profList.innerHTML = profs.map(p => `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`).join('');
-    } catch (e) { console.error(e); }
+
+        // แก้ชื่อตัวแปรให้ตรงกับข้างบน (subjects และ professors)
+        if (subjects && subList) {
+            subList.innerHTML = subjects.map(s => 
+                `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`
+            ).join('');
+        }
+
+        if (professors && profList) {
+            profList.innerHTML = professors.map(p => 
+                `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`
+            ).join('');
+        }
+    } catch (e) { 
+        console.error("Search Error:", e); 
+    }
 }
 
 async function loadSheet(){
