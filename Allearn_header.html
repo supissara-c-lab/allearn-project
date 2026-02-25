@@ -3,11 +3,8 @@
         <img src="logolearn.png" class="logo" alt="Allearn">
     </a>
 
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
+    <div class="header-right">
 
-    <div class="header-right" id="headerRight">
         <div class="dropdown">
             <button class="dropdown-btn">วิทยาการคอมพิวเตอร์ ▾</button>
             <div class="dropdown-menu">
@@ -57,20 +54,3 @@
         <a href="Allearn_profile.html" class="icon" id="profileIcon">👤</a>
     </div>
 </header>
-
-<script>
-// ฟังก์ชันสำหรับเปิด/ปิดเมนูในมือถือ
-function toggleMobileMenu() {
-    const menu = document.getElementById('headerRight');
-    menu.classList.toggle('active');
-}
-
-// ปิดเมนูเมื่อคลิกที่ว่างข้างนอก (สำหรับมือถือ)
-document.addEventListener('click', (e) => {
-    const menu = document.getElementById('headerRight');
-    const btn = document.querySelector('.mobile-menu-btn');
-    if (menu.classList.contains('active') && !menu.contains(e.target) && !btn.contains(e.target)) {
-        menu.classList.remove('active');
-    }
-});
-</script>
