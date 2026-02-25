@@ -14,175 +14,224 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     </script>
 
-    <title>Allearn - รวมกันเรียน</title>
+    <title>Allearn - แพลตฟอร์มเพื่อการเรียนรู้อย่างเป็นระบบ</title>
 
     <style>
+        :root {
+            --primary-blue: #1f3c88;
+            --secondary-blue: #4a7599;
+            --accent-yellow: #f7d046;
+            --soft-yellow: #fff9e6;
+            --bg-gray: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
         body {
-            background:#f5f7fa;
+            background: var(--bg-gray);
             font-family: 'Kanit', sans-serif;
             background-image: linear-gradient(#e0e7ef 1px, transparent 1px);
             background-size: 100% 40px;
             margin: 0;
+            overflow-x: hidden;
         }
 
+        /* Hero Section - Multiplatform Responsive */
         .hero {
             display: flex;
-            padding: 80px 40px;
+            padding: 60px 5%;
             justify-content: center;
             align-items: center;
             max-width: 1200px;
             margin: auto;
-            gap: 50px;
+            gap: 40px;
+            min-height: 60vh;
         }
 
         .hero-content-box {
-            background-color: #fff9e6;
-            padding: 50px;
-            border-radius: 40px;
-            width: 50%;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            background-color: var(--soft-yellow);
+            padding: 40px;
+            border-radius: 30px;
+            flex: 1;
+            box-shadow: var(--shadow);
         }
 
-        .hero-content-box h1 { font-size: 42px; color: #1f3c88; margin-top: 0; }
-        .hero-content-box p { font-size: 18px; color: #4a7599; }
+        .hero-content-box h1 { 
+            font-size: clamp(28px, 4vw, 42px); 
+            color: var(--primary-blue); 
+            margin-top: 0; 
+            line-height: 1.2;
+        }
+        .hero-content-box p { 
+            font-size: clamp(16px, 2vw, 18px); 
+            color: var(--secondary-blue); 
+            margin-bottom: 30px;
+        }
 
-        .hero-img-only { width: 40%; }
+        .hero-img-only { 
+            flex: 0.8; 
+            display: flex;
+            justify-content: center;
+        }
         .hero-img-only img {
             width: 100%;
-            border-radius: 30px;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+            max-width: 450px;
+            border-radius: 20px;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));
+            object-fit: cover;
         }
 
-        .btn-yellow {
+        .btn-action {
             display: inline-block;
-            padding: 15px 35px;
-            background: #ffeb3b;
-            border-radius: 30px;
-            font-weight: bold;
+            padding: 14px 32px;
+            background: var(--accent-yellow);
+            border-radius: 50px;
+            font-weight: 600;
             text-decoration: none;
-            color: #333;
-            transition: 0.3s;
-        }
-        .btn-yellow:hover { background: #f7d046; transform: scale(1.05); }
-
-        /* ===== CONTENT SECTION ===== */
-        .content-white {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 80px 20px 60px;
-            border-radius: 60px 60px 0 0;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
-        }
-
-        .section-title, .professor-title {
+            color: var(--primary-blue);
+            transition: all 0.3s ease;
             text-align: center;
-            color: #1f3c88;
-            margin-bottom: 40px;
-            font-size: 32px;
+            border: none;
+        }
+        .btn-action:hover { 
+            background: #eec220; 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(247, 208, 70, 0.4);
         }
 
-        /* ===== SHEET GRID ===== */
-        .sheet-section { max-width:1200px; margin:auto; margin-bottom: 80px; }
+        /* Content Section */
+        .content-white {
+            background: var(--white);
+            padding: 60px 5%;
+            border-radius: 50px 50px 0 0;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.03);
+            margin-top: 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--primary-blue);
+            margin-bottom: 40px;
+            font-size: clamp(24px, 3vw, 32px);
+            font-weight: 600;
+        }
+
+        /* Sheet Grid - Flexible Layout */
+        .sheet-section { max-width: 1200px; margin: auto; margin-bottom: 60px; }
         .sheet-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 28px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
         }
 
         .sheet-card {
-            background:white;
-            border-radius:22px;
-            box-shadow:0 8px 22px rgba(0,0,0,.08);
-            overflow:hidden;
-            text-decoration:none;
-            color:#000;
-            transition:.25s;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
         }
-        .sheet-card:hover { transform:translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.12); }
-        .sheet-thumb { height:170px; background:#e6ecf5; }
-        .sheet-thumb img { width:100%; height:100%; object-fit:cover; }
+        .sheet-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1); 
+        }
+        .sheet-thumb { height: 180px; background: #eceff4; overflow: hidden; }
+        .sheet-thumb img { width: 100%; height: 100%; object-fit: cover; }
         
-        .sheet-body { padding:16px; }
+        .sheet-body { padding: 20px; flex-grow: 1; }
         .sheet-tag {
-            display:inline-block;
-            background:#f7d046;
-            color:#000;
-            padding:4px 14px;
-            border-radius:999px;
-            font-size:12px;
-            margin-bottom:10px;
-            font-weight: 500;
+            display: inline-block;
+            background: var(--accent-yellow);
+            color: var(--primary-blue);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            margin-bottom: 12px;
+            font-weight: 600;
         }
 
         .sheet-title-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            gap: 10px;
+            gap: 12px;
         }
-        .sheet-body h3 { font-size:16px; margin:0; color:#1f3c88; flex: 1; line-height: 1.4; }
-        
+        .sheet-body h3 { font-size: 16px; margin: 0; color: var(--primary-blue); line-height: 1.5; }
         .sheet-fav-count {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             font-size: 14px;
             color: #ff4757;
-            font-weight: 500;
+            font-weight: 600;
         }
 
-        .professor-section { max-width: 1100px; margin: auto; }
+        /* Professor Section - Scrolling Fix */
+        .professor-section { max-width: 1200px; margin: auto; }
         .professor-scroll {
             display: flex;
             gap: 20px;
             overflow-x: auto;
-            padding: 20px 10px;
-            scrollbar-width: thin;
+            padding: 20px 5px;
+            scrollbar-width: none; /* Hide for Firefox */
+            -ms-overflow-style: none; /* Hide for IE */
         }
-        .professor-scroll::-webkit-scrollbar { height: 6px; }
-        .professor-scroll::-webkit-scrollbar-thumb { background: #f7d046; border-radius: 10px; }
+        .professor-scroll::-webkit-scrollbar { display: none; } /* Hide for Chrome/Safari */
         
         .professor-card {
-            width: 220px;
-            min-height: 280px;
-            background: white;
-            border-radius: 25px;
-            padding: 25px 15px;
+            width: 200px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
             flex-shrink: 0;
+            border: 1px solid #f0f0f0;
         }
-        .professor-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
-        
+        .professor-card:hover { transform: translateY(-5px); border-color: var(--accent-yellow); }
         .professor-card img { 
-            width: 120px; 
-            height: 120px; 
+            width: 100px; 
+            height: 100px; 
             border-radius: 50%; 
             object-fit: cover; 
-            margin-bottom: 20px; 
-            border: 3px solid #f7d046;
-            flex-shrink: 0;
+            margin-bottom: 15px; 
+            border: 3px solid var(--accent-yellow);
         }
-
         .professor-card h3 { 
-            font-size: 17px; 
-            color: #1f3c88; 
+            font-size: 15px; 
+            color: var(--primary-blue); 
             margin: 0; 
             line-height: 1.4;
-            width: 100%;
-            word-wrap: break-word;
         }
 
-        .footer { background: #000; color: #fff; padding: 60px 40px; margin-top: 80px; }
+        /* Footer */
+        .footer { 
+            background: #1a1a1a; 
+            color: #d1d1d1; 
+            padding: 60px 10%; 
+            margin-top: 60px; 
+        }
+        .footer h2 { color: var(--white); margin-bottom: 20px; font-size: 24px; }
+        .footer p { line-height: 1.8; font-size: 14px; }
 
-        @media (max-width: 900px) {
-            .hero { flex-direction: column; text-align: center; }
-            .hero-content-box, .hero-img-only { width: 100%; }
-            .sheet-grid { grid-template-columns: repeat(1, 1fr); }
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 40px; }
+            .hero-content-box { width: 100%; order: 2; }
+            .hero-img-only { width: 100%; order: 1; }
+            .hero-img-only img { max-width: 300px; }
+        }
+
+        @media (max-width: 600px) {
+            .content-white { padding: 40px 15px; border-radius: 30px 30px 0 0; }
+            .sheet-grid { grid-template-columns: 1fr; }
+            .hero-content-box { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -194,33 +243,33 @@
 <section class="hero">
     <div class="hero-content-box">
         <h1>เพื่อนยามยากที่จะพาเราเรียนเข้าใจทุกบทเรียน</h1>
-        <p>แหล่งรวมชีทสรุปสำหรับวิชาต่าง ๆ ภายในคณะวิทยาศาสตร์และเทคโนโลยี มทร.พระนคร</p>
-        <a href="Allearn_login.html" class="btn-yellow" id="heroBtn">ยังไม่มีบัญชีใช่หรือไม่</a>
+        <p>แหล่งรวมเอกสารประกอบการเรียนและสรุปบทเรียน สำหรับนักศึกษาคณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร</p>
+        <a href="Allearn_login.html" class="btn-action" id="heroBtn">เริ่มต้นใช้งานระบบ</a>
     </div>
     <div class="hero-img-only">
-        <img src="pepstudy.jpg" alt="Study">
+        <img src="pepstudy.jpg" alt="การเรียนรู้ของนักศึกษา">
     </div>
 </section>
 
 <div class="content-white">
-    <h2 class="section-title">ชีทแนะนำล่าสุด</h2>
+    <h2 class="section-title">เอกสารการเรียนที่ได้รับความนิยมล่าสุด</h2>
     <section class="sheet-section">
         <div class="sheet-grid" id="sheetGrid">
-            <p style="text-align:center; grid-column: 1/-1;">กำลังโหลดชีท...</p>
+            <p style="text-align:center; grid-column: 1/-1; color: #888;">กำลังดำเนินการเรียกข้อมูล...</p>
         </div>
     </section>
 
     <section class="professor-section">
-        <h2 class="professor-title">อาจารย์คณะวิทยาศาสตร์และเทคโนโลยี</h2>
+        <h2 class="section-title">คณาจารย์ประจำคณะวิทยาศาสตร์และเทคโนโลยี</h2>
         <div class="professor-scroll" id="professorScroll"></div>
     </section>
 </div>
 
 <footer class="footer">
     <div style="max-width: 1200px; margin: auto;">
-        <h2>ติดต่อเรา</h2>
+        <h2>ข้อมูลการติดต่อ</h2>
         <p>คณะวิทยาศาสตร์และเทคโนโลยี มหาวิทยาลัยเทคโนโลยีราชมงคลพระนคร (ศูนย์พระนครเหนือ)<br>
-           เลขที่ 1381 ถนนประชาราษฎร์ 1 แขวงวงศ์สว่าง เขตบางซื่อ กรุงเทพฯ 10800<br>
+           1381 ถนนประชาราษฎร์ 1 แขวงวงศ์สว่าง เขตบางซื่อ กรุงเทพมหานคร 10800<br>
            โทรศัพท์ : 02-836-3000 ต่อ 4194, 4155</p>
     </div>
 </footer>
@@ -232,6 +281,7 @@
         'sb_publishable_YHDQnG7VsNgb4O4i6MPN5g_lgU5eOGI'
     );
 
+    // Load Header
     fetch("Allearn_header.html")
         .then(res => res.text())
         .then(data => {
@@ -276,7 +326,7 @@
             .limit(6);
 
         if (error) {
-            grid.innerHTML = "<p>โหลดข้อมูลไม่สำเร็จ</p>";
+            grid.innerHTML = "<p style='text-align:center;'>ขออภัย ไม่สามารถโหลดข้อมูลได้ในขณะนี้</p>";
             return;
         }
 
@@ -285,7 +335,7 @@
             return `
                 <a href="Allearn_content.html?idsheet=${s.idsheet}" class="sheet-card">
                     <div class="sheet-thumb">
-                        <img src="${s.sheet_cover || 'Exsheet.png'}" onerror="this.src='Exsheet.png'">
+                        <img src="${s.sheet_cover || 'Exsheet.png'}" onerror="this.src='Exsheet.png'" alt="${s.sheet_name}">
                     </div>
                     <div class="sheet-body">
                         <span class="sheet-tag">${s.Subject?.subject_name || 'ทั่วไป'}</span>
@@ -304,23 +354,18 @@
 
     async function loadProfessor() {
         const scroll = document.getElementById("professorScroll");
-        
-        // แก้ไข: เอา .limit(10) ออก และเพิ่ม .order("idprofessor") เพื่อเรียงตามเลข ID
         const { data, error } = await supabaseClient
             .from("Professor")
             .select("idprofessor, name, surname, img_professor")
-            .order("idprofessor", { ascending: true }); // เรียงจากน้อยไปมาก
+            .order("idprofessor", { ascending: true });
 
-        if (error) {
-            console.error("Error loading professors:", error);
-            return;
-        }
+        if (error) return;
         
         if (data) {
             scroll.innerHTML = data.map(p => `
                 <a href="Allearn_professor.html?id=${p.idprofessor}" style="text-decoration:none; color:inherit; flex-shrink:0;">
                     <div class="professor-card">
-                        <img src="${p.img_professor || 'img/professor-default.jpg'}" onerror="this.src='img/professor-default.jpg'">
+                        <img src="${p.img_professor || 'img/professor-default.jpg'}" onerror="this.src='img/professor-default.jpg'" alt="${p.name}">
                         <h3>${p.name}<br>${p.surname}</h3>
                     </div>
                 </a>

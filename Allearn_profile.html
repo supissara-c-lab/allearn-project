@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="Allearn_header.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,123 +12,144 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
-<title>Allearn - บัญชีผู้ใช้</title>
+<title>Allearn - ข้อมูลบัญชีผู้ใช้</title>
 
 <style>
-body{
-  font-family: 'Kanit', sans-serif;
-  background:#f5f7fa;
-  background-image: linear-gradient(#e0e7ef 1px, transparent 1px);
-  background-size: 100% 40px;
-  margin:0;
+:root {
+  --primary-color: #1f3c88;
+  --secondary-color: #4a7599;
+  --accent-color: #f7d046;
+  --danger-color: #ff6b6b;
+  --bg-color: #f5f7fa;
+  --white: #ffffff;
 }
 
-.profile-detail{
-  display:flex;
-  gap:50px;
-  padding:50px;
-  max-width:1000px;
-  margin:40px auto;
-  background:#fff;
-  border-radius:40px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+body {
+  font-family: 'Kanit', sans-serif;
+  background: var(--bg-color);
+  background-image: linear-gradient(#e0e7ef 1px, transparent 1px);
+  background-size: 100% 40px;
+  margin: 0;
+  color: #333;
+}
+
+/* ===== 1. PROFILE SECTION (Responsive) ===== */
+.profile-detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 40px;
+  max-width: 1000px;
+  margin: 40px auto;
+  background: var(--white);
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
   position: relative;
+  box-sizing: border-box;
 }
 
 .edit-profile-btn {
   position: absolute;
-  top: 30px;
-  right: 30px;
-  color: #ccc; 
-  font-size: 22px;
+  top: 25px;
+  right: 25px;
+  color: #bdc3c7; 
+  font-size: 20px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.3s ease;
   background: none;
   border: none;
-  padding: 0;
+  padding: 5px;
 }
-.edit-profile-btn:hover { color: #999; transform: scale(1.1); }
+.edit-profile-btn:hover { color: var(--primary-color); transform: scale(1.1); }
 
 .profile-left {
+  flex: 0 0 220px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
 }
 
 .profile-left img {
-  width: 220px;
-  height: 220px;
+  width: 180px;
+  height: 180px;
   object-fit: cover;
   border-radius: 50%;
-  border: 5px solid #f7d046; 
+  border: 4px solid var(--accent-color); 
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }
 
 .logout-btn {
-  margin-top: 25px;
-  padding: 10px 30px;
+  margin-top: 20px;
+  padding: 8px 25px;
   border: none;
-  border-radius: 25px;
-  background: #ff6b6b;
+  border-radius: 20px;
+  background: var(--danger-color);
   color: #fff;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
+  width: 100%;
 }
-.logout-btn:hover { background: #fa5252; transform: scale(1.05); }
+.logout-btn:hover { background: #fa5252; opacity: 0.9; }
 
 .info {
   flex: 1;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
 .user-title {
-  font-size: 32px;
-  color: #1f3c88;
+  font-size: 28px;
+  color: var(--primary-color);
   margin: 0 0 10px 0;
 }
 
 .tag-row {
   display: flex;
-  gap: 10px;
-  margin: 10px 0 20px 0;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 5px 0 20px 0;
 }
 
 .tag {
-  padding: 6px 18px;
-  border-radius: 999px;
-  font-size: 14px;
+  padding: 5px 15px;
+  border-radius: 50px;
+  font-size: 13px;
   font-weight: 500;
 }
 
 .blue { background: #2f6bff; color: #fff; }
 .babyblue { background: #b1e4eb; color: #000; }
 
-.stats-clean span { color: #666; font-size: 14px; }
-.stats-clean h2 { margin: 0; color: #1f3c88; font-size: 28px; }
+.stats-clean span { color: #7f8c8d; font-size: 14px; }
+.stats-clean h2 { margin: 0; color: var(--primary-color); font-size: 24px; }
 
-/* ===== 2. FILE AREA & GRID ===== */
+/* ===== 2. FILE AREA & GRID (Multiplatform) ===== */
 .file-area {
   max-width: 1000px;
   margin: 0 auto 40px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 .file-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   border-bottom: 2px solid #e0e7ef;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
-.section-title { font-size: 24px; color: #1f3c88; margin: 0; display: flex; align-items: center; gap: 10px; }
-.section-title i { color: #1f3c88; }
+.section-title { font-size: 22px; color: var(--primary-color); margin: 0; display: flex; align-items: center; gap: 10px; }
 
 .upload-btn {
-  padding: 10px 22px;
-  border-radius: 25px;
-  background: #fbbf24;
+  padding: 8px 20px;
+  border-radius: 50px;
+  background: var(--accent-color);
   color: #000;
   text-decoration: none;
   font-size: 14px;
@@ -135,51 +157,68 @@ body{
   transition: 0.3s;
 }
 .upload-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-.admin-btn { background: #1f3c88; color: #fff; margin-right: 10px; }
+.admin-btn { background: var(--primary-color); color: #fff; margin-right: 10px; }
 
 .file-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
 }
 .sheet-card {
   background: white;
-  border-radius: 22px;
-  box-shadow: 0 8px 22px rgba(0,0,0,.08);
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
   overflow: hidden;
   text-decoration: none;
-  color: #000;
-  transition: .25s;
+  color: #333;
+  transition: 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
-.sheet-card:hover { transform: translateY(-6px); }
-.sheet-thumb { height: 170px; background: #e6ecf5; }
+.sheet-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+.sheet-thumb { height: 160px; background: #e6ecf5; }
 .sheet-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.sheet-body { padding: 16px; }
+.sheet-body { padding: 15px; }
 .sheet-tag {
   display: inline-block;
-  background: #f7d046;
+  background: var(--accent-color);
   color: #000;
-  padding: 4px 14px;
-  border-radius: 999px;
-  font-size: 12px;
+  padding: 3px 12px;
+  border-radius: 50px;
+  font-size: 11px;
   margin-bottom: 8px;
-  font-weight: 500;
+  font-weight: 600;
 }
-.sheet-body h3 { font-size: 16px; margin: 0; color: #1f3c88; }
+.sheet-body h3 { font-size: 15px; margin: 0; color: var(--primary-color); line-height: 1.4; }
 
-/* Modal Styles Same as Before */
-.modal{ position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; justify-content: center; align-items: center; z-index: 999; }
-.modal-box{ background: #fff; width: 380px; padding: 30px; border-radius: 24px; text-align: center; }
-.profile-preview img{ width: 130px; height: 130px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; }
-.crop-btn{ margin-top: 8px; padding: 6px 16px; border-radius: 20px; border: none; background: #f7d046; cursor: pointer; font-family: 'Kanit', sans-serif; }
+/* Modal Responsive */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+.modal-box { background: #fff; width: 100%; max-width: 400px; padding: 30px; border-radius: 25px; box-sizing: border-box; }
+.profile-preview img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid var(--accent-color); }
+.crop-btn { margin-top: 8px; padding: 6px 16px; border-radius: 20px; border: none; background: var(--accent-color); cursor: pointer; font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 500; }
 .input-group { text-align: left; margin-top: 15px; }
-.input-group label { display: block; font-size: 14px; color: #666; margin-bottom: 5px; margin-left: 5px; }
-.modal-box input[type="text"]{ width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #ddd; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
-.modal-actions{ display: flex; gap: 10px; margin-top: 10px; }
-.btn{ flex: 1; padding: 12px; border-radius: 20px; border: none; cursor: pointer; font-family: 'Kanit', sans-serif; font-weight: 500; }
-.btn.save{ background:#1f3c88; color:#fff; }
-.btn.cancel{ background:#eee; }
+.input-group label { display: block; font-size: 13px; color: #666; margin-bottom: 5px; }
+.modal-box input[type="text"] { width: 100%; padding: 10px 15px; margin-bottom: 12px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+.modal-actions { display: flex; gap: 10px; margin-top: 15px; }
+.btn { flex: 1; padding: 10px; border-radius: 50px; border: none; cursor: pointer; font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 14px; }
+.btn.save { background: var(--primary-color); color: #fff; }
+.btn.cancel { background: #f0f2f5; color: #666; }
 
+/* Mobile Adaptability */
+@media (max-width: 600px) {
+  .profile-detail { padding: 30px 20px; flex-direction: column; text-align: center; margin: 20px auto; }
+  .profile-left { flex: none; }
+  .user-title { font-size: 24px; }
+  .tag-row { justify-content: center; }
+  .file-header { flex-direction: column; align-items: flex-start; }
+  .btn-group { width: 100%; display: flex; gap: 10px; }
+  .upload-btn { flex: 1; text-align: center; }
+  .file-grid { grid-template-columns: 1fr 1fr; gap: 15px; } /* 2 columns on mobile */
+}
+
+@media (max-width: 400px) {
+  .file-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 
@@ -187,21 +226,21 @@ body{
 
 <div id="editProfileModal" class="modal">
   <div class="modal-box">
-    <h2 style="color: #1f3c88; margin-top: 0;">แก้ไขโปรไฟล์</h2>
-    <div class="profile-preview">
+    <h3 style="color: var(--primary-color); margin: 0 0 20px 0; text-align: center;">แก้ไขข้อมูลส่วนตัว</h3>
+    <div class="profile-preview" style="text-align: center;">
       <img id="previewImg" src="Exprofile.png">
-      <input type="file" id="profileFile" accept="image/*" style="display: block; margin: 10px auto; font-size: 12px;">
-      <button class="crop-btn" onclick="cropImage()">ครอปรูป</button>
+      <input type="file" id="profileFile" accept="image/*" style="display: block; margin: 10px auto; font-size: 11px; width: 100%;">
+      <button class="crop-btn" onclick="cropImage()">ปรับแต่งรูปภาพ</button>
     </div>
     <div class="input-group">
-      <label>ชื่อ</label>
-      <input type="text" id="editName" placeholder="กรอกชื่อ">
-      <label>นามสกุล</label>
-      <input type="text" id="editSurname" placeholder="กรอกนามสกุล">
+      <label>ชื่อภาษาไทย</label>
+      <input type="text" id="editName" placeholder="ระบุชื่อ">
+      <label>นามสกุลภาษาไทย</label>
+      <input type="text" id="editSurname" placeholder="ระบุนามสกุล">
     </div>
     <div class="modal-actions">
       <button class="btn cancel" onclick="closeEdit()">ยกเลิก</button>
-      <button class="btn save" onclick="saveProfile()">บันทึก</button>
+      <button class="btn save" onclick="saveProfile()">บันทึกข้อมูล</button>
     </div>
   </div>
 </div>
@@ -219,13 +258,13 @@ body{
   </div>
 
   <div class="info">
-    <h1 class="user-title" id="userName"></h1>
+    <h1 class="user-title" id="userName">ยินดีต้อนรับ</h1>
     <div class="tag-row">
-      <div class="tag blue" id="majorTag">กำลังโหลด...</div>
-      <div class="tag babyblue" id="yearTag">กำลังโหลด...</div>
+      <div class="tag blue" id="majorTag">กำลังตรวจสอบข้อมูล...</div>
+      <div class="tag babyblue" id="yearTag">กำลังตรวจสอบข้อมูล...</div>
     </div>
     <div class="stats-clean">
-        <span>ชีทที่เพิ่มโดยฉันทั้งหมด</span>
+        <span>จำนวนเอกสารที่อัปโหลดทั้งหมด</span>
         <h2 id="sheetCount">0</h2>
     </div>
   </div>
@@ -233,21 +272,21 @@ body{
 
 <div class="file-area">
   <div class="file-header">
-    <h2 class="section-title"><i class="fa-solid fa-file-invoice"></i> ชีทของฉัน</h2>
+    <h2 class="section-title"><i class="fa-solid fa-file-invoice"></i> รายการชีทที่อัพโหลด</h2>
     <div class="btn-group">
-        <a href="Allearn_admin.html" class="upload-btn admin-btn" id="adminBtn" style="display: none;">Admin Dashboard</a>
-        <a href="Allearn_uploadui.html" class="upload-btn">+ เพิ่มชีทใหม่</a>
+        <a href="Allearn_admin.html" class="upload-btn admin-btn" id="adminBtn" style="display: none;">ผู้ดูแลระบบ</a>
+        <a href="Allearn_uploadui.html" class="upload-btn">+ เพิ่มเอกสารใหม่</a>
     </div>
   </div>
   <div class="file-grid" id="mySheetGrid"></div>
 </div>
 
-<div class="file-area" style="margin-top: 60px;">
+<div class="file-area" style="margin-top: 50px;">
   <div class="file-header">
-    <h2 class="section-title"><i class="fa-solid fa-heart" style="color: #ff6b6b;"></i> ชีทที่ถูกใจ</h2>
+    <h2 class="section-title"><i class="fa-solid fa-heart" style="color: var(--danger-color);"></i> รายการที่ถูกใจ</h2>
   </div>
   <div class="file-grid" id="favSheetGrid">
-      <p style="text-align: center; grid-column: 1/-1; color: #888;">กำลังโหลดชีทที่ถูกใจ...</p>
+      <p style="text-align: center; grid-column: 1/-1; color: #888; padding: 20px;">กำลังตรวจสอบข้อมูลรายการโปรด...</p>
   </div>
 </div>
 
@@ -259,10 +298,11 @@ const supabaseClient = supabase.createClient(
 
 const IDACC = sessionStorage.getItem("idacc");
 if (!IDACC) {
-  alert("เซสชันหมดอายุหรือยังไม่ได้เข้าสู่ระบบ");
+  alert("เซสชันสิ้นสุดการทำงาน กรุณาเข้าสู่ระบบอีกครั้ง");
   location.href = "Allearn_login.html";
 }
 
+// Load Header
 fetch("Allearn_header.html")
   .then(res => res.text())
   .then(data => {
@@ -288,12 +328,13 @@ async function loadSearchQuickTags() {
         ]);
         if (subjects && subList) subList.innerHTML = subjects.map(s => `<a href="Allearn_years.html?idyear=${s.idyear}&target_sub=${s.idsubject}" class="search-tag-link">${s.subject_name}</a>`).join('');
         if (professors && profList) profList.innerHTML = professors.map(p => `<a href="Allearn_professor.html?id=${p.idprofessor}" class="search-tag-link">${p.name}</a>`).join('');
-    } catch (err) { console.error(err); }
+    } catch (err) { console.error("Error loading quick tags:", err); }
 }
 
+// Main Data Loading
 loadUser();
 loadMySheets();
-loadFavoriteSheets(); // เรียกใช้งานฟังก์ชันใหม่
+loadFavoriteSheets();
 
 async function loadUser() {
   try {
@@ -305,15 +346,15 @@ async function loadUser() {
 
     if (error) throw error;
     if (data) {
-      document.getElementById("userName").textContent = `สวัสดี!, ${data.name} ${data.surname}`;
-      document.getElementById("majorTag").textContent = data.Major?.major_name || "ไม่ระบุสาขา";
-      document.getElementById("yearTag").textContent = data.Year?.year || "ไม่ระบุชั้นปี";
+      document.getElementById("userName").textContent = `สวัสดีคุณ ${data.name} ${data.surname}`;
+      document.getElementById("majorTag").textContent = data.Major?.major_name || "ไม่ระบุสาขาวิชา";
+      document.getElementById("yearTag").textContent = `${data.Year?.year || "ไม่ระบุ"}`;
       if (data.role === "Admin") document.getElementById("adminBtn").style.display = "inline-block";
       
       const profileImgEl = document.getElementById("profileImg");
       profileImgEl.src = data.profile_img ? data.profile_img + "?t=" + Date.now() : "Exprofile.png";
     }
-  } catch (err) { console.error(err); }
+  } catch (err) { console.error("User loading error:", err); }
 }
 
 async function loadMySheets(){
@@ -321,63 +362,51 @@ async function loadMySheets(){
   const { data, error } = await supabaseClient.from("Sheet").select(`idsheet, sheet_name, sheet_cover, Subject(subject_name)`).eq("idacc", IDACC).order("idsheet", { ascending: false });
   if (error) return;
   document.getElementById("sheetCount").textContent = data.length;
-  grid.innerHTML = data.length === 0 ? `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">คุณยังไม่ได้เพิ่มชีทเลย</p>` : "";
-  data.forEach(s => {
-    grid.innerHTML += renderSheetCard(s);
-  });
+  grid.innerHTML = data.length === 0 ? `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">ไม่พบรายการเอกสารที่ท่านอัปโหลด</p>` : "";
+  data.forEach(s => { grid.innerHTML += renderSheetCard(s); });
 }
 
-// ฟังก์ชันใหม่: โหลดชีทที่ถูกใจ
 async function loadFavoriteSheets(){
   const grid = document.getElementById("favSheetGrid");
   try {
     const { data, error } = await supabaseClient
       .from("favsheet")
-      .select(`
-        idsheet,
-        Sheet (
-          idsheet,
-          sheet_name,
-          sheet_cover,
-          Subject (subject_name)
-        )
-      `)
+      .select(`idsheet, Sheet (idsheet, sheet_name, sheet_cover, Subject (subject_name))`)
       .eq("idacc", IDACC);
 
     if (error) throw error;
-
     if (!data || data.length === 0) {
-      grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">ยังไม่มีชีทที่ถูกใจ</p>`;
+      grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">ไม่มีรายการเอกสารที่ท่านถูกใจ</p>`;
       return;
     }
 
     grid.innerHTML = "";
-    data.forEach(item => {
-      if (item.Sheet) {
-        grid.innerHTML += renderSheetCard(item.Sheet);
-      }
-    });
+    data.forEach(item => { if (item.Sheet) grid.innerHTML += renderSheetCard(item.Sheet); });
   } catch (err) {
-    console.error("Error loading favorites:", err);
-    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>`;
+    console.error("Favorite loading error:", err);
+    grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #e74c3c;">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>`;
   }
 }
 
-// ฟังก์ชันช่วย Render Card จะได้ไม่ต้องเขียนซ้ำ
 function renderSheetCard(s) {
   return `
     <a href="Allearn_content.html?idsheet=${s.idsheet}" class="sheet-card">
         <div class="sheet-thumb">
-            <img src="${s.sheet_cover || 'Exsheet.png'}" onerror="this.src='Exsheet.png'">
+            <img src="${s.sheet_cover || 'Exsheet.png'}" onerror="this.src='Exsheet.png'" alt="${s.sheet_name}">
         </div>
         <div class="sheet-body">
-            <span class="sheet-tag">${s.Subject?.subject_name || "ทั่วไป"}</span>
+            <span class="sheet-tag">${s.Subject?.subject_name || "วิชาทั่วไป"}</span>
             <h3>${s.sheet_name}</h3>
         </div>
     </a>`;
 }
 
-function logout(){ sessionStorage.clear(); location.href = "Allearn_login.html"; }
+function logout(){ 
+    if(confirm("ท่านต้องการออกจากระบบใช่หรือไม่?")) {
+        sessionStorage.clear(); 
+        location.href = "Allearn_login.html"; 
+    }
+}
 </script>
 
 <script>
@@ -400,7 +429,10 @@ document.querySelector(".edit-profile-btn").addEventListener("click", async () =
   document.getElementById("editProfileModal").style.display = "flex";
 });
 
-function closeEdit(){ document.getElementById("editProfileModal").style.display = "none"; }
+function closeEdit(){ 
+    document.getElementById("editProfileModal").style.display = "none"; 
+    if(cropper) { cropper.destroy(); cropper = null; }
+}
 
 document.getElementById("profileFile").addEventListener("change", e => {
   const file = e.target.files[0];
@@ -411,32 +443,36 @@ document.getElementById("profileFile").addEventListener("change", e => {
 });
 
 function cropImage(){
-  if (!cropper) return;
+  if (!cropper) { alert("กรุณาเลือกรูปภาพก่อนทำการปรับแต่ง"); return; }
   cropper.getCroppedCanvas({ width: 400, height: 400 }).toBlob(blob => {
     croppedBlob = blob;
     previewImg.src = URL.createObjectURL(blob);
     cropper.destroy(); cropper = null;
+    alert("ปรับแต่งรูปภาพเรียบร้อยแล้ว");
   });
 }
 
 async function saveProfile(){
   const name = editName.value.trim();
   const surname = editSurname.value.trim();
+  if(!name || !surname) return alert("กรุณาระบุชื่อและนามสกุล");
+
   const { data: old } = await supabaseClient.from("Account").select("profile_img").eq("idacc", IDACC).single();
   let imageUrl = old?.profile_img || null;
 
   if (croppedBlob) {
     const fileName = `${IDACC}_${Date.now()}.png`;
     const { error: uploadError } = await supabaseClient.storage.from("profile").upload(fileName, croppedBlob, { cacheControl: "3600", contentType: "image/png", upsert: true });
-    if (uploadError) return alert("อัปโหลดรูปไม่สำเร็จ");
+    if (uploadError) return alert("อัปโหลดรูปภาพไม่สำเร็จ");
     const { data } = supabaseClient.storage.from("profile").getPublicUrl(fileName);
     imageUrl = data.publicUrl;
   }
 
   await supabaseClient.from("Account").update({ name, surname, profile_img: imageUrl }).eq("idacc", IDACC); 
-  document.getElementById("userName").textContent = `สวัสดี!, ${name} ${surname}`;
+  document.getElementById("userName").textContent = `สวัสดีคุณ ${name} ${surname}`;
   if (imageUrl) profileImg.src = imageUrl + "?v=" + Date.now();
   closeEdit();
+  alert("บันทึกข้อมูลส่วนตัวเรียบร้อยแล้ว");
 }
 </script>
 

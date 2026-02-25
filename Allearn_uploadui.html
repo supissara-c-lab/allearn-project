@@ -9,116 +9,226 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
-    <title>Allearn - อัพโหลดชีท</title>
+<title>Allearn - อัปโหลดเอกสารประกอบการเรียน</title>
 
 <style>
     :root {
         --card-bg: #FFF9E5;
-        --primary-blue: #456E94;
+        --primary-blue: #1f3c88;
+        --secondary-blue: #456E94;
         --tag-blue: #60a5fa;
         --tag-red: #f87171;
         --tag-yellow: #fbbf24;
+        --white: #ffffff;
     }
 
     body {
         font-family: 'Kanit', sans-serif;
-        margin: 0; padding: 40px 20px;
+        margin: 0; 
+        padding: 20px;
         min-height: 100vh;
         background-color: #cbdcf0;
         background-image: linear-gradient(#9fbfd6 1px, transparent 1px);
         background-size: 100% 35px;
-        display: flex; justify-content: center; align-items: center;
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
     }
 
-    .container { width: 100%; max-width: 800px; }
+    .container { 
+        width: 100%; 
+        max-width: 850px; 
+    }
 
+    /* Multiplatform Card Design */
     .sheet-card {
         background-color: var(--card-bg);
-        border-radius: 40px;
+        border-radius: 30px;
         padding: 40px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        display: flex; flex-direction: row; gap: 30px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        display: flex; 
+        flex-direction: row; 
+        gap: 30px;
         position: relative;
     }
 
     .upload-section {
-        flex: 0 0 150px;
-        display: flex; flex-direction: column; align-items: center; padding-top: 20px;
+        flex: 0 0 160px;
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        padding-top: 10px;
     }
+
     .file-drop-area {
-        width: 120px; height: 140px;
-        background-color: #fff;
+        width: 100%;
+        max-width: 140px;
+        height: 180px;
+        background-color: var(--white);
         border: 2px dashed #ccc;
-        border-radius: 15px;
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
-        cursor: pointer; transition: 0.3s;
-        text-align: center; padding: 10px;
-        color: #888; font-size: 0.9rem;
-        position: relative; overflow: hidden;
+        border-radius: 20px;
+        display: flex; 
+        flex-direction: column;
+        align-items: center; 
+        justify-content: center;
+        cursor: pointer; 
+        transition: all 0.3s ease;
+        text-align: center; 
+        padding: 15px;
+        color: #888; 
+        font-size: 0.9rem;
+        position: relative; 
+        overflow: hidden;
     }
-    .file-drop-area:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
-    .file-drop-area input[type="file"] { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-    .file-icon { font-size: 40px; margin-bottom: 10px; }
+    .file-drop-area:hover { 
+        border-color: var(--secondary-blue); 
+        color: var(--secondary-blue);
+        background-color: #f0f4f8;
+    }
+    .file-drop-area input[type="file"] { 
+        position: absolute; 
+        width: 100%; 
+        height: 100%; 
+        opacity: 0; 
+        cursor: pointer; 
+    }
+    .file-icon { font-size: 45px; margin-bottom: 12px; }
 
-    .info-section { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+    .info-section { 
+        flex: 1; 
+        display: flex; 
+        flex-direction: column; 
+        gap: 20px; 
+        min-width: 0; /* Prevent flex shrink issues */
+    }
 
-    .title-wrapper { display: flex; align-items: center; margin-bottom: 5px; }
     .title-bubble {
-        background-color: var(--primary-blue); color: white;
-        padding: 15px 30px; border-radius: 20px;
-        position: relative; font-weight: 600; font-size: 1.2rem;
-        width: 100%; display: flex; align-items: center;
+        background-color: var(--primary-blue); 
+        color: var(--white);
+        padding: 12px 25px; 
+        border-radius: 15px;
+        position: relative; 
+        font-weight: 500;
+        width: 100%;
+        box-sizing: border-box;
     }
-    .title-bubble::before {
-        content: ''; position: absolute; left: -10px; top: 50%; transform: translateY(-50%);
-        border-style: solid; border-width: 10px 10px 10px 0;
-        border-color: transparent var(--primary-blue) transparent transparent;
+    
+    /* Speech bubble arrow only for desktop */
+    @media (min-width: 601px) {
+        .title-bubble::before {
+            content: ''; 
+            position: absolute; 
+            left: -10px; 
+            top: 50%; 
+            transform: translateY(-50%);
+            border-style: solid; 
+            border-width: 10px 10px 10px 0;
+            border-color: transparent var(--primary-blue) transparent transparent;
+        }
     }
-    input.title-input {
-        background: transparent; border: none; color: white;
-        font-family: 'Kanit', sans-serif; font-size: 1.2rem;
-        font-weight: 600; width: 100%; outline: none;
-    }
-    input.title-input::placeholder { color: rgba(255,255,255,0.7); }
 
-    .tags-row { display: flex; flex-wrap: wrap; gap: 10px; }
-    .custom-select-wrapper { position: relative; }
-    select {
-        appearance: none; border: none;
-        padding: 8px 30px 8px 15px; border-radius: 20px;
-        font-family: 'Kanit', sans-serif; font-size: 0.9rem;
-        color: white; font-weight: 500; cursor: pointer;
-        outline: none; min-width: 120px;
+    input.title-input {
+        background: transparent; 
+        border: none; 
+        color: var(--white);
+        font-family: 'Kanit', sans-serif; 
+        font-size: 1.1rem;
+        font-weight: 500; 
+        width: 100%; 
+        outline: none;
     }
-    select option { color: #333 !important; background-color: #fff !important; }
+    input.title-input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .tags-row { 
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px; 
+    }
+
+    .custom-select-wrapper select {
+        appearance: none; 
+        border: none;
+        padding: 10px 15px; 
+        border-radius: 12px;
+        font-family: 'Kanit', sans-serif; 
+        font-size: 0.9rem;
+        color: var(--white); 
+        font-weight: 500; 
+        cursor: pointer;
+        outline: none; 
+        width: 100%;
+        transition: opacity 0.2s;
+    }
     #subjectSelect { background-color: var(--tag-blue); }
     #professorSelect { background-color: var(--tag-red); }
+    .custom-select-wrapper select:hover { opacity: 0.9; }
 
-    .desc-wrapper { margin-top: 5px; }
     textarea {
-        width: 100%; box-sizing: border-box; 
-        background-color: #fff; border: 2px solid transparent; 
-        border-radius: 20px; padding: 15px; 
-        font-family: 'Kanit', sans-serif; font-size: 1rem;
-        color: #333; resize: vertical; outline: none;
-        min-height: 120px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.2s;
+        width: 100%; 
+        box-sizing: border-box; 
+        background-color: var(--white); 
+        border: 1px solid transparent; 
+        border-radius: 15px; 
+        padding: 15px; 
+        font-family: 'Kanit', sans-serif; 
+        font-size: 1rem;
+        color: #333; 
+        resize: none; 
+        outline: none;
+        min-height: 100px; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
+        transition: 0.3s;
     }
-    textarea:focus { border-color: var(--tag-blue); box-shadow: 0 4px 10px rgba(96, 165, 250, 0.2); }
+    textarea:focus { border-color: var(--tag-blue); }
 
-    .action-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+    .action-row { 
+        display: flex; 
+        justify-content: flex-end; 
+    }
+
     button#uploadBtn {
-        background-color: var(--tag-yellow); color: #fff; border: none;
-        padding: 10px 30px; border-radius: 20px;
-        font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 1rem;
-        cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s;
+        background-color: var(--tag-yellow); 
+        color: #1f3c88; 
+        border: none;
+        padding: 12px 35px; 
+        border-radius: 50px;
+        font-family: 'Kanit', sans-serif; 
+        font-weight: 600; 
+        font-size: 1rem;
+        cursor: pointer; 
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+        transition: 0.3s;
     }
-    button#uploadBtn:hover { transform: translateY(-2px); box-shadow: 0 6px 10px rgba(0,0,0,0.15); }
-    button#uploadBtn:disabled { background-color: #ddd; cursor: not-allowed; }
+    button#uploadBtn:hover:not(:disabled) { 
+        transform: translateY(-2px); 
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15); 
+    }
+    button#uploadBtn:disabled { background-color: #cbd5e1; cursor: not-allowed; color: #64748b; }
 
+    /* Responsive Adjustments */
     @media (max-width: 600px) {
-        .sheet-card { flex-direction: column; padding: 20px; }
-        .upload-section { width: 100%; flex-direction: row; justify-content: center; margin-bottom: 20px; }
+        body { padding: 15px; }
+        .sheet-card { 
+            flex-direction: column; 
+            padding: 25px; 
+            gap: 20px; 
+            border-radius: 20px;
+        }
+        .upload-section { 
+            flex: none; 
+            width: 100%; 
+            padding: 0;
+        }
+        .file-drop-area { 
+            width: 100%; 
+            max-width: none; 
+            height: 120px; 
+            flex-direction: row;
+            gap: 15px;
+        }
+        .file-icon { font-size: 30px; margin: 0; }
+        .tags-row { grid-template-columns: 1fr; }
+        .action-row button { width: 100%; }
     }
 </style>
 </head>
@@ -130,7 +240,7 @@
         <div class="upload-section">
             <div class="file-drop-area">
                 <span class="file-icon">📄</span>
-                <span class="file-msg" id="fileNameDisplay">คลิกเพื่อเลือกไฟล์ PDF</span>
+                <span class="file-msg" id="fileNameDisplay">เลือกไฟล์เอกสาร (PDF)</span>
                 <input type="file" id="pdfFile" accept="application/pdf">
             </div>
             <canvas id="coverCanvas" style="display:none;"></canvas>
@@ -139,46 +249,46 @@
         <div class="info-section">
             <div class="title-wrapper">
                 <div class="title-bubble">
-                    <input type="text" id="sheetName" class="title-input" placeholder="พิมพ์ชื่อชีทสรุปที่นี่...">
+                    <input type="text" id="sheetName" class="title-input" placeholder="ระบุชื่อเอกสารประกอบการเรียน...">
                 </div>
             </div>
 
             <div class="tags-row">
                 <div class="custom-select-wrapper">
                     <select id="subjectSelect">
-                        <option value="">-- เลือกวิชา --</option>
+                        <option value="">-- เลือกรายวิชา --</option>
                     </select>
                 </div>
                 <div class="custom-select-wrapper">
                     <select id="professorSelect">
-                        <option value="">รอเลือกวิชา...</option>
+                        <option value="">-- เลือกอาจารย์ผู้สอน --</option>
                     </select>
                 </div>
             </div>
 
             <div class="desc-wrapper">
-                <textarea id="sheetDesc" rows="4" placeholder="เนื้อหาเกี่ยวกับอะไร? เขียนคำอธิบายสั้นๆ ที่นี่..."></textarea>
+                <textarea id="sheetDesc" rows="4" placeholder="ระบุรายละเอียดหรือคำอธิบายเพิ่มเติมเกี่ยวกับเอกสารนี้..."></textarea>
             </div>
 
             <div class="action-row">
-                <button id="uploadBtn">UPLOAD SHEET</button>
+                <button id="uploadBtn">อัปโหลดเอกสาร</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-/* ================= PDF LOGIC (เพิ่มใหม่) ================= */
+/* ================= PDF RENDERING LOGIC ================= */
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 async function generateCoverBlob(file) {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-    const page = await pdf.getPage(1); // ดึงหน้า 1
+    const page = await pdf.getPage(1); 
     
     const canvas = document.getElementById('coverCanvas');
     const context = canvas.getContext('2d');
-    const viewport = page.getViewport({ scale: 0.8 }); // ขนาดหน้าปก
+    const viewport = page.getViewport({ scale: 0.8 }); 
 
     canvas.height = viewport.height;
     canvas.width = viewport.width;
@@ -188,25 +298,26 @@ async function generateCoverBlob(file) {
     return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 }
 
-/* ================= UI LOGIC ================= */
+/* ================= UI EVENT LOGIC ================= */
 document.getElementById('pdfFile').addEventListener('change', function(event) {
     const fileName = event.target.files[0]?.name;
     const display = document.getElementById('fileNameDisplay');
     if(fileName) {
-        display.textContent = fileName.length > 15 ? fileName.substring(0, 12) + "..." : fileName;
-        display.style.color = "#456E94"; display.style.fontWeight = "bold";
+        display.textContent = fileName.length > 20 ? fileName.substring(0, 17) + "..." : fileName;
+        display.style.color = "#1f3c88"; 
+        display.style.fontWeight = "500";
     } else {
-        display.textContent = "คลิกเพื่อเลือกไฟล์ PDF"; display.style.color = "#888";
+        display.textContent = "เลือกไฟล์เอกสาร (PDF)"; 
+        display.style.color = "#888";
     }
 });
 
-/* ================= SUPABASE LOGIC ================= */
+/* ================= SUPABASE INTEGRATION ================= */
 const supabaseClient = supabase.createClient(
     "https://ctfrqwehpvpldtiojedb.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0ZnJxd2VocHZwbGR0aW9qZWRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY0OTk3NDgsImV4cCI6MjA4MjA3NTc0OH0.48CcrKn7QoBq5ao9ENyy_DSgJLf5ieybk1pLUVNQyO0"
 )
 
-// ใช้ IDACC จาก Session จริงจ้า
 const IDACC = sessionStorage.getItem("idacc");
 const IDMAJOR = "M01"; 
 
@@ -218,7 +329,9 @@ async function loadSubjects() {
     const { data, error } = await supabaseClient.from("Subject").select("idsubject, subject_name").order("subject_name")
     if (error) return;
     data.forEach(s => {
-        const opt = document.createElement("option"); opt.value = s.idsubject; opt.textContent = s.subject_name;
+        const opt = document.createElement("option"); 
+        opt.value = s.idsubject; 
+        opt.textContent = s.subject_name;
         subjectSelect.appendChild(opt)
     })
 }
@@ -226,7 +339,7 @@ loadSubjects()
 
 subjectSelect.onchange = async () => {
     const idsubject = subjectSelect.value
-    professorSelect.innerHTML = `<option value="">-- เลือกอาจารย์ --</option>`
+    professorSelect.innerHTML = `<option value="">-- เลือกอาจารย์ผู้สอน --</option>`
     if (!idsubject) return;
 
     const { data, error } = await supabaseClient
@@ -235,7 +348,8 @@ subjectSelect.onchange = async () => {
     if (data) {
         data.forEach(p => {
             if(p.Professor) {
-                const opt = document.createElement("option"); opt.value = p.idprofessor;
+                const opt = document.createElement("option"); 
+                opt.value = p.idprofessor;
                 opt.textContent = `${p.Professor.name} ${p.Professor.surname}`; 
                 professorSelect.appendChild(opt)
             }
@@ -251,37 +365,36 @@ uploadBtn.onclick = async () => {
     const idprofessor = professorSelect.value
     
     if (!file || !sheetName || !idsubject || !idprofessor) {
-        alert("กรุณากรอกข้อมูลให้ครบ"); return;
+        alert("กรุณาระบุข้อมูลที่จำเป็นให้ครบถ้วน"); return;
     }
 
     uploadBtn.disabled = true; 
-    uploadBtn.textContent = "Processing PDF...";
+    uploadBtn.textContent = "กำลังประมวลผลไฟล์...";
 
     try {
         const timeStamp = Date.now();
-        const safeFileName = file.name.toLowerCase().replace(/[^a-z0-9]/g, "_");
         
-        // 1. เจนหน้าปกจากหน้าแรกของ PDF จ้า
+        // 1. สร้างและอัปโหลดรูปภาพหน้าปก
         const coverBlob = await generateCoverBlob(file);
-        const coverPath = `sheet-cover/${IDACC}_${timeStamp}.png`; // ไปที่โฟลเดอร์ sheet-cover
+        const coverPath = `sheet-cover/${IDACC}_${timeStamp}.png`;
         
-        uploadBtn.textContent = "Uploading Cover...";
+        uploadBtn.textContent = "กำลังอัปโหลดหน้าปก...";
         await supabaseClient.storage.from("sheet-pdf").upload(coverPath, coverBlob);
         const coverUrl = supabaseClient.storage.from("sheet-pdf").getPublicUrl(coverPath).data.publicUrl;
 
-        // 2. อัพโหลดไฟล์ PDF จริง
-        uploadBtn.textContent = "Uploading PDF...";
-        const pdfPath = `sheets/${IDACC}_${timeStamp}.pdf`; // ไปที่โฟลเดอร์ sheets
+        // 2. อัปโหลดไฟล์เอกสาร PDF
+        uploadBtn.textContent = "กำลังอัปโหลดเอกสาร...";
+        const pdfPath = `sheets/${IDACC}_${timeStamp}.pdf`;
         const { error: pdfError } = await supabaseClient.storage.from("sheet-pdf").upload(pdfPath, file);
         if (pdfError) throw pdfError;
 
-        // 3. บันทึกข้อมูลลงตาราง Sheet
-        uploadBtn.textContent = "Saving to Database...";
+        // 3. บันทึกข้อมูลลงฐานข้อมูล
+        uploadBtn.textContent = "กำลังบันทึกข้อมูล...";
         const { error: dbError } = await supabaseClient.from("Sheet").insert({
             sheet_name: sheetName,
             description: sheetDesc,
             file_path: pdfPath,
-            sheet_cover: coverUrl, // เก็บ URL รูปหน้าปกที่เจนได้จ๊ะ
+            sheet_cover: coverUrl,
             idacc: IDACC,
             idsubject: idsubject,
             idmajor: IDMAJOR,
@@ -290,13 +403,13 @@ uploadBtn.onclick = async () => {
 
         if (dbError) throw dbError;
 
-        alert("อัพโหลดชีทเสร็จสิ้น");
+        alert("ดำเนินการอัปโหลดเอกสารสำเร็จ");
         location.href = "Allearn_profile.html";
 
     } catch (err) {
-        alert("เกิดข้อผิดพลาด: " + err.message);
+        alert("เกิดข้อผิดพลาดในการดำเนินงาน: " + err.message);
         uploadBtn.disabled = false;
-        uploadBtn.textContent = "UPLOAD SHEET";
+        uploadBtn.textContent = "อัปโหลดเอกสาร";
     }
 }
 </script>
