@@ -22,8 +22,11 @@
             <button class="dropdown-btn">ผลงานนักศึกษา ▾</button>
             <div class="dropdown-menu">
                 <a href="https://sci.rmutp.ac.th/18182-2/" target="_blank">สาขาวิชาวิทยาการคอมพิวเตอร์</a>
-                <a href="https://sci.rmutp.ac.th/ผลงานนักศึกษา-est/" target="_blank">สาขาวิชา...สิ่งแวดล้อม</a>
-                </div>
+                <a href="https://sci.rmutp.ac.th/ผลงานนักศึกษา-est/" target="_blank">สาขาวิชาวิทยาศาสตร์และเทคโนโลยีสิ่งแวดล้อม</a>
+                <a href="https://sci.rmutp.ac.th/ผลงานนักศึกษาทางด้านวิ/" target="_blank">สาขาวิชาวัสดุศาสตร์อุตสาหกรรม</a>
+                <a href="https://sci.rmutp.ac.th/performance-data-science/" target="_blank">สาขาวิชาวิทยาการข้อมูลและเทคโนโลยีสารสนเทศ</a>
+                <a href="https://sci.rmutp.ac.th/hcat-student/" target="_blank">สาขาวิชาเทคโนโลยีสุขภาพ เครื่องสำอางและการชะลอวัย</a>
+            </div>
         </div>
 
         <div class="search-container">
@@ -31,8 +34,24 @@
                 <span>🔍</span>
                 <input type="text" id="headerSearchInput" placeholder="ค้นหา..." autocomplete="off" />
             </div>
+
             <div id="headerSearchDropdown" class="search-results-panel">
+                <div class="search-section">
+                    <h4>รายวิชา</h4>
+                    <div id="searchSubjectList" class="tags-group">
+                        <span class="loading-text">กำลังโหลด...</span>
+                    </div>
                 </div>
+                
+                <div class="search-divider"></div>
+
+                <div class="search-section">
+                    <h4>อาจารย์</h4>
+                    <div id="searchProfessorList" class="tags-group">
+                        <span class="loading-text">กำลังโหลด...</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <a href="Allearn_profile.html" class="icon" id="profileIcon">👤</a>
@@ -40,8 +59,18 @@
 </header>
 
 <script>
+// ฟังก์ชันสำหรับเปิด/ปิดเมนูในมือถือ
 function toggleMobileMenu() {
     const menu = document.getElementById('headerRight');
     menu.classList.toggle('active');
 }
+
+// ปิดเมนูเมื่อคลิกที่ว่างข้างนอก (สำหรับมือถือ)
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('headerRight');
+    const btn = document.querySelector('.mobile-menu-btn');
+    if (menu.classList.contains('active') && !menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.classList.remove('active');
+    }
+});
 </script>

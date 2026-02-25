@@ -1,61 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
+
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #ffffff;
-    padding: 10px 5%; /* ใช้ % เพื่อความยืดหยุ่น */
+    padding: 10px 5%; 
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    position: sticky; /* เปลี่ยนเป็น sticky เพื่อให้ติดขอบบนตอนเลื่อน */
+    position: sticky; 
     top: 0;
     z-index: 1000;
+    font-family: 'Kanit', sans-serif;
 }
 
 header img.logo {
-    height: 60px; /* ลดขนาดลงหน่อยเพื่อให้เข้ากับทุกจอ */
+    height: 60px; /* ลดความสูงลงเล็กน้อยเพื่อความทันสมัย */
+    width: auto;
     object-fit: contain;
 }
 
+/* ปุ่ม Hamburger (แสดงเฉพาะจอเล็ก) */
 .mobile-menu-btn {
-    display: none; /* ซ่อนไว้ในคอม */
+    display: none;
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 26px;
     cursor: pointer;
     color: #1f3c88;
+    padding: 5px;
 }
 
 /* ===== RIGHT ZONE ===== */
 .header-right {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 15px;
 }
 
-/* ===== ปรับแต่ง SEARCH ให้ยืดหยุ่น ===== */
+/* ===== DROPDOWN ===== */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    background: #4f8fd8;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.25s;
+    white-space: nowrap;
+}
+
+.dropdown-btn:hover {
+    background: #3b78bd;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 115%;
+    left: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    min-width: 280px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    display: none;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.dropdown-menu a:hover {
+    background: #f0f6ff;
+    color: #4a90e2;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* ===== SEARCH CONTAINER ===== */
+.search-container {
+    position: relative;
+}
+
 .search {
     display: flex;
     align-items: center;
     background: #f7d046;
-    padding: 8px 15px;
+    padding: 6px 15px;
     border-radius: 25px;
     border: 2px solid #e3d738;
     transition: 0.3s;
-    width: 140px; /* เริ่มต้นแคบลงหน่อย */
+    width: 160px; /* ความกว้างเริ่มต้นในจอคอม */
 }
 
 .search:focus-within {
     background: #fff;
-    width: 200px;
+    width: 220px;
 }
 
-/* ===== MEDIA QUERIES (สำหรับมือถือและแท็บเล็ต) ===== */
+.search input {
+    border: none;
+    background: transparent;
+    outline: none;
+    margin-left: 8px;
+    font-size: 14px;
+    width: 100%;
+    font-family: inherit;
+}
+
+.search-results-panel {
+    display: none;
+    position: absolute;
+    top: 130%;
+    right: 0;
+    width: 400px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 20px;
+    border: 1px solid #eee;
+}
+
+.search-results-panel.show { display: block; }
+
+/* ===== ICON ===== */
+.icon {
+    font-size: 24px;
+    text-decoration: none;
+    color: #555;
+    transition: 0.2s;
+}
+
+.icon:hover { color: #1f3c88; }
+
+/* ===== RESPONSIVE (MOBILE & TABLET) ===== */
 @media (max-width: 992px) {
-    .mobile-menu-btn {
-        display: block; /* โชว์ปุ่มในมือถือ */
-    }
+    header { padding: 10px 20px; }
+
+    .mobile-menu-btn { display: block; }
 
     .header-right {
-        display: none; /* ซ่อนเมนูเดิม */
+        display: none; /* ซ่อนเมนูแนวนอน */
         position: absolute;
         top: 100%;
         left: 0;
@@ -63,21 +161,23 @@ header img.logo {
         background: #fff;
         flex-direction: column;
         padding: 20px;
-        gap: 20px;
+        gap: 15px;
         box-shadow: 0 10px 15px rgba(0,0,0,0.1);
         box-sizing: border-box;
+        max-height: 80vh;
+        overflow-y: auto;
     }
 
-    .header-right.active {
-        display: flex; /* แสดงเมื่อกดปุ่ม Hamburger */
-    }
+    .header-right.active { display: flex; }
 
     .dropdown, .dropdown-btn, .search-container, .search {
-        width: 100%; /* ให้ยาวเต็มจอในมือถือ */
+        width: 100%; 
     }
 
+    .search:focus-within { width: 100%; }
+
     .dropdown-menu {
-        position: static; /* ไม่อิงตำแหน่งเดิม */
+        position: static; 
         width: 100%;
         box-shadow: none;
         border: 1px solid #f0f0f0;
@@ -87,6 +187,14 @@ header img.logo {
     .search-results-panel {
         width: 100%;
         position: static;
-        box-sizing: border-box;
+        box-shadow: none;
+        padding: 15px 0;
+    }
+    
+    .icon {
+        padding: 10px 0;
+        width: 100%;
+        text-align: center;
+        border-top: 1px solid #eee;
     }
 }
